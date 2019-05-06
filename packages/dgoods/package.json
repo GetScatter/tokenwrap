@@ -1,0 +1,21 @@
+{
+  "name": "@tokenwrap/dgoods",
+  "version": "0.0.0",
+  "author": "GetScatter Ltd.",
+  "license": "MIT",
+  "main": "lib/dgoods.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "tsc": "tsc",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "@tokenwrap/core": "^0.0.0"
+  }
+}
