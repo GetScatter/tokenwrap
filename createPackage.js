@@ -45,7 +45,7 @@ fs.mkdirSync(`${PACKAGE_DIR}/lib`);
 fs.mkdirSync(`${PACKAGE_DIR}/__tests__`);
 fs.writeFileSync(`${PACKAGE_DIR}/__tests__/${PACKAGE_NAME}.spec.ts`, '');
 fs.writeFileSync(`${PACKAGE_DIR}/package.json`, JSON.stringify(PACKAGE_JSON, null, 2));
-fs.writeFileSync(`${PACKAGE_DIR}/README.md`, '');
+fs.writeFileSync(`${PACKAGE_DIR}/README.md`, `# ${PACKAGE_NAME}`);
 fs.writeFileSync(`${PACKAGE_DIR}/tsconfig.json`, JSON.stringify(TS_CONFIG, null, 2));
 fs.writeFileSync(`${PACKAGE_DIR}/src/${PACKAGE_NAME}.ts`, '');
 
