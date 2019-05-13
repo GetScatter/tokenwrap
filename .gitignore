@@ -6,3 +6,4 @@ packages/*/lib
 .env
 .DS_Store
 *.iml
+dist
