@@ -2,19 +2,14 @@
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
-    "noImplicitAny": false,
-    "removeComments": true,
-    "noLib": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "target": "es6",
     "sourceMap": true,
-    "lib": [
-      "es6"
-    ]
+    "removeComments": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "target": "es5",
+    "lib": ["es6"]
   },
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }
