@@ -12,7 +12,8 @@
     "lib"
   ],
   "scripts": {
-    "tsc": "tsc",
+    "build": "tsc --pretty",
+    "watch": "tsc --pretty -w",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
