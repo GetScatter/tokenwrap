@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "author": "GetScatter Ltd.",
   "license": "MIT",
-  "main": "lib/dgoods.js",
+  "main": "dist/dgoods.js",
   "directories": {
-    "lib": "lib",
+    "lib": "dist",
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "scripts": {
     "build": "tsc --pretty",
@@ -17,6 +17,6 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@tokenwrap/core": "^0.0.0"
+    "@tokenwrap/core-eosio": "^0.0.0"
   }
 }
