@@ -1,25 +1,24 @@
 import * as Long from 'long'
 
+const formatRow = (result: any, model: any) => {
+  result.rows = result.rows.map(model.fromJson)
+  return result
+}
+const getRowsOnly = (result: any) => result.rows
+const getFirstOnly = (result: any) =>
+  result.rows.length ? getRowsOnly(result)[0] : null
+
 export const getTableRowsBuilder = (eos: any, contractAccount: string) => {
   return (table: string, options: any = {}) => {
-    const formatRow = (result: any, model: any) => {
-      result.rows = result.rows.map(model.fromJson)
-      return result
-    }
-
-    const getRowsOnly = (result: any) => result.rows
-    const getFirstOnly = (result: any) =>
-      result.rows.length ? getRowsOnly(result)[0] : null
-
     // OPTION DEFAULTS
     const scope = options.scope || contractAccount
     const index = options.index || null
-    const upper_bound = options.upper_bound || null
+    const upperBound = options.upper_bound || null
     const search = options.search || null
     const limit = options.limit || 10
     const nobound = options.nobound || null
-    const key_type = options.key_type || null
-    const index_position = options.index_position || null
+    const keyType = options.key_type || null
+    const indexPosition = options.index_position || null
     const model = options.model || null
     const firstOnly = options.firstOnly || null
     const rowsOnly = options.rowsOnly || null
@@ -28,8 +27,8 @@ export const getTableRowsBuilder = (eos: any, contractAccount: string) => {
       index !== null
         ? {
             lower_bound: index,
-            upper_bound: upper_bound
-              ? upper_bound
+            upper_bound: upperBound
+              ? upperBound
               : Long.fromValue(index)
                   .add(search !== null ? search : limit)
                   .toString()
@@ -38,11 +37,11 @@ export const getTableRowsBuilder = (eos: any, contractAccount: string) => {
     if (nobound) {
       delete additions.upper_bound
     }
-    if (key_type) {
-      additions = Object.assign({ key_type }, additions)
+    if (keyType) {
+      additions = Object.assign({ key_type: keyType }, additions)
     }
-    if (index_position) {
-      additions = Object.assign({ index_position }, additions)
+    if (indexPosition) {
+      additions = Object.assign({ index_position: indexPosition }, additions)
     }
     const body = Object.assign(
       { json: true, code: contractAccount, scope, table, limit },

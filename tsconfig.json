@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "module": "umd",
+    "module": "commonjs",
     "declaration": true,
     "sourceMap": true,
+    "declarationMap": true,
     "removeComments": true,
     "noImplicitAny": true,
     "strict": true,
@@ -12,5 +13,5 @@
     "target": "es5",
     "lib": ["es6"]
   },
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": ["node_modules"]
 }

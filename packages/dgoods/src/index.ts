@@ -4,11 +4,11 @@ type name = string
 type symbol_code = string
 type uint64_t = number
 type dasset = string
-interface account {
+interface Account {
   name: name
   authority?: string
 }
-interface action {
+interface Action {
   json: object
   send: any
 }
@@ -22,8 +22,6 @@ export class DAsset {
   }
   public readonly amount!: number
   public readonly precision!: number
-
-  constructor() {}
 
   public toString() {
     return parseFloat(this.amount.toString())
@@ -42,9 +40,8 @@ export class Configs {
   public readonly standard!: name
   public readonly version!: string
   public readonly symbol!: symbol_code
+  // tslint:disable-next-line: variable-name
   public readonly category_name_id!: uint64_t
-
-  constructor() {}
 }
 
 export class Category {
@@ -55,8 +52,6 @@ export class Category {
     return (Object as any).assign(Category.placeholder(), json)
   }
   public readonly category!: name
-
-  constructor() {}
 }
 
 export class Stats {
@@ -72,13 +67,16 @@ export class Stats {
   public readonly burnable!: boolean
   public readonly transferable!: boolean
   public readonly issuer!: name
+  // tslint:disable-next-line: variable-name
   public readonly token_name!: name
+  // tslint:disable-next-line: variable-name
   public readonly category_name_id!: uint64_t
+  // tslint:disable-next-line: variable-name
   public readonly max_supply!: dasset
+  // tslint:disable-next-line: variable-name
   public readonly current_supply!: uint64_t
+  // tslint:disable-next-line: variable-name
   public readonly issued_supply!: uint64_t
-
-  constructor() {}
 }
 
 export class TokenBalance {
@@ -90,12 +88,12 @@ export class TokenBalance {
     p.amount = DAsset.fromJson(json.amount)
     return p
   }
+  // tslint:disable-next-line: variable-name
   public readonly category_name_id!: uint64_t
   public readonly category!: name
+  // tslint:disable-next-line: variable-name
   public readonly token_name!: name
   public readonly amount!: DAsset
-
-  constructor() {}
 }
 
 export class TokenInfo {
@@ -106,17 +104,19 @@ export class TokenInfo {
     return (Object as any).assign(TokenInfo.placeholder(), json)
   }
   public readonly id!: uint64_t
+  // tslint:disable-next-line: variable-name
   public readonly serial_number!: uint64_t
   public readonly owner!: name
   public readonly category!: name
+  // tslint:disable-next-line: variable-name
   public readonly token_name!: name
+  // tslint:disable-next-line: variable-name
   public readonly metadata_type!: string
+  // tslint:disable-next-line: variable-name
   public readonly metadata_uri!: string
-
-  constructor() {}
 }
 
-export default class dGoods {
+export default class DGoods {
   private eos: any
   private isLegacy: boolean
   private contractAccount: name
@@ -143,9 +143,9 @@ export default class dGoods {
     this.getTableRows = getTableRowsBuilder(this.eos, this.contractAccount)
   }
 
-  public transact(actions: Array<action | object>) {
+  public transact(actions: Array<Action | object>) {
     return this.transactor()({
-      actions: actions.map((action) => {
+      actions: actions.map(action => {
         if (action.hasOwnProperty('json')) {
           return (action as any).json
         } else {
@@ -163,33 +163,27 @@ export default class dGoods {
    * Gets the base token configs
    */
   public async getConfig() {
-    return await this.getTableRows('tokenconfigs', {
+    return this.getTableRows('tokenconfigs', {
       model: Configs,
       firstOnly: true
-    }).catch((err: Error) => {
-      console.error(err)
-      return null
     })
   }
 
   /***
    * Specify a category_name_id to get it, or none to get all.
-   * @param account_name
-   * @param category_name_id
+   * @param accountName
+   * @param categoryNameId
    */
   public async getBalances(
-    account_name: name,
-    category_name_id: uint64_t | null = null
+    accountName: name,
+    categoryNameId: uint64_t | null = null
   ) {
-    return await this.getTableRows('accounts', {
-      scope: encodeName(account_name),
+    return this.getTableRows('accounts', {
+      scope: encodeName(accountName),
       model: TokenBalance,
-      firstOnly: category_name_id !== null,
-      rowsOnly: category_name_id === null,
-      index: category_name_id !== null ? category_name_id : null
-    }).catch((err: Error) => {
-      console.error(err)
-      return category_name_id === null ? [] : null
+      firstOnly: categoryNameId !== null,
+      rowsOnly: categoryNameId === null,
+      index: categoryNameId !== null ? categoryNameId : null
     })
   }
 
@@ -198,48 +192,39 @@ export default class dGoods {
    * @param category
    */
   public async getCategory(category: name | null = null) {
-    return await this.getTableRows('categories', {
+    return this.getTableRows('categories', {
       model: Category,
       firstOnly: !!category,
       rowsOnly: !category,
       index: category ? encodeName(category) : null
-    }).catch((err: Error) => {
-      console.error(err)
-      return !category ? [] : null
     })
   }
 
   /***
    * Specify a token_name to get it, or none to get all.
    * @param category
-   * @param token_name
+   * @param tokenName
    */
-  public async getStats(category: name, token_name: name | null = null) {
-    return await this.getTableRows('stats', {
+  public async getStats(category: name, tokenName: name | null = null) {
+    return this.getTableRows('stats', {
       scope: encodeName(category),
       model: Stats,
-      firstOnly: !!token_name,
-      rowsOnly: !token_name,
-      index: token_name ? encodeName(token_name) : null
-    }).catch((err: Error) => {
-      console.error(err)
-      return !token_name ? [] : null
+      firstOnly: !!tokenName,
+      rowsOnly: !tokenName,
+      index: tokenName ? encodeName(tokenName) : null
     })
   }
 
   /***
    * Specify a token_name to get it, or none to get all.
-   * @param tokeninfo_id
+   * @param tokeninfoId
    */
-  public async getTokenInfo(tokeninfo_id: uint64_t | null = null) {
-    return await this.getTableRows('token', {
+  public async getTokenInfo(tokeninfoId: uint64_t | null = null) {
+    return this.getTableRows('token', {
       model: TokenInfo,
-      firstOnly: tokeninfo_id !== null,
-      rowsOnly: tokeninfo_id === null,
-      index: tokeninfo_id !== null ? tokeninfo_id : null
-    }).catch((err: Error) => {
-      console.error(err)
-      return tokeninfo_id === null ? [] : null
+      firstOnly: tokeninfoId !== null,
+      rowsOnly: tokeninfoId === null,
+      index: tokeninfoId !== null ? tokeninfoId : null
     })
   }
 
@@ -260,13 +245,13 @@ export default class dGoods {
   }
 
   public create(
-    issuer: account,
+    issuer: Account,
     category: name,
-    token_name: name,
+    tokenName: name,
     fungible: boolean,
     burnable: boolean,
     transferable: boolean,
-    max_supply: string
+    maxSupply: string
   ) {
     return this.actionResult({
       account: this.contractAccount,
@@ -274,11 +259,11 @@ export default class dGoods {
       data: {
         issuer: issuer.name,
         category,
-        token_name,
+        token_name: tokenName,
         fungible,
         burnable,
         transferable,
-        max_supply
+        max_supply: maxSupply
       },
       authorization: this.actionAuth(issuer)
     })
@@ -287,10 +272,10 @@ export default class dGoods {
   public issue(
     to: name,
     category: name,
-    token_name: name,
+    tokenName: name,
     quantity: string,
-    metadata_type: string,
-    metadata_uri: string,
+    metadataType: string,
+    metadataUri: string,
     memo: string
   ) {
     return this.actionResult({
@@ -299,42 +284,42 @@ export default class dGoods {
       data: {
         to,
         category,
-        token_name,
+        token_name: tokenName,
         quantity,
-        metadata_type,
-        metadata_uri,
+        metadata_type: metadataType,
+        metadata_uri: metadataUri,
         memo
       },
       authorization: this.actionAuth(this.contractAccount)
     })
   }
 
-  public burnnft(owner: account, tokeninfo_ids: uint64_t[]) {
+  public burnnft(owner: Account, tokeninfoIds: uint64_t[]) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'create',
       data: {
         owner: owner.name,
-        tokeninfo_ids
+        tokeninfo_ids: tokeninfoIds
       },
       authorization: this.actionAuth(owner)
     })
   }
 
-  public burn(owner: account, category_name_id: uint64_t, quantity: string) {
+  public burn(owner: Account, categoryNameId: uint64_t, quantity: string) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'create',
       data: {
         owner: owner.name,
-        category_name_id,
+        category_name_id: categoryNameId,
         quantity
       },
       authorization: this.actionAuth(owner)
     })
   }
 
-  public setrampayer(payer: account, id: uint64_t) {
+  public setrampayer(payer: Account, id: uint64_t) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'setrampayer',
@@ -347,9 +332,9 @@ export default class dGoods {
   }
 
   public transfernft(
-    from: account,
+    from: Account,
     to: name,
-    tokeninfo_ids: uint64_t[],
+    tokeninfoIds: uint64_t[],
     memo: string
   ) {
     return this.actionResult({
@@ -358,7 +343,7 @@ export default class dGoods {
       data: {
         from: from.name,
         to,
-        tokeninfo_ids,
+        tokeninfo_ids: tokeninfoIds,
         memo
       },
       authorization: this.actionAuth(from)
@@ -366,10 +351,10 @@ export default class dGoods {
   }
 
   public transfer(
-    from: account,
+    from: Account,
     to: name,
     category: name,
-    token_name: name,
+    tokenName: name,
     quantity: string,
     memo: string
   ) {
@@ -380,7 +365,7 @@ export default class dGoods {
         from: from.name,
         to,
         category,
-        token_name,
+        token_name: tokenName,
         quantity,
         memo
       },
