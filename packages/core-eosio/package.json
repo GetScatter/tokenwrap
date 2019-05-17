@@ -12,8 +12,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc --pretty",
-    "watch": "tsc --pretty -w",
+    "build": "echo \"Error: build from root\" && exit 1",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
