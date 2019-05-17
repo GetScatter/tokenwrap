@@ -1,15 +1,19 @@
-import { assert } from 'chai'
+import * as chai from 'chai'
+import * as chaiAsPromised from 'chai-as-promised'
+chai.use(chaiAsPromised)
+const { assert } = chai
+
+/// @ts-ignore
 import * as Eos from 'eosjs'
 import 'mocha'
-import dGoods from '../src/dgoods'
+import { DGoods } from '../src/index'
 
 describe('dGoods SDK', () => {
-  let dgoods: dGoods = null
+  let dgoods: DGoods = null as any
 
   it('should instantiate a dgoods instance', async () => {
-    const f = hello => hello + 1
     const eos = Eos({ httpEndpoint: 'https://api.jungle.alohaeos.com' })
-    dgoods = new dGoods(eos, 'dgoodsdgoods')
+    dgoods = new DGoods(eos, 'dgoodsdgoods')
     assert(dgoods, 'Did not instantiate a dgoods instance')
   })
 
