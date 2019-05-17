@@ -116,7 +116,7 @@ export class TokenInfo {
   public readonly metadata_uri!: string
 }
 
-export default class DGoods {
+export class DGoods {
   private eos: any
   private isLegacy: boolean
   private contractAccount: name
