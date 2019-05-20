@@ -77,6 +77,8 @@ export class Stats {
   public readonly current_supply!: uint64_t
   // tslint:disable-next-line: variable-name
   public readonly issued_supply!: uint64_t
+  // tslint:disable-next-line: variable-name
+  public readonly base_uri!: string
 }
 
 export class TokenBalance {
@@ -111,9 +113,7 @@ export class TokenInfo {
   // tslint:disable-next-line: variable-name
   public readonly token_name!: name
   // tslint:disable-next-line: variable-name
-  public readonly metadata_type!: string
-  // tslint:disable-next-line: variable-name
-  public readonly metadata_uri!: string
+  public readonly relative_uri!: string
 }
 
 export class DGoods {
@@ -192,7 +192,7 @@ export class DGoods {
    * @param category
    */
   public async getCategory(category: name | null = null) {
-    return this.getTableRows('categories', {
+    return this.getTableRows('categoryinfo', {
       model: Category,
       firstOnly: !!category,
       rowsOnly: !category,
@@ -206,7 +206,7 @@ export class DGoods {
    * @param tokenName
    */
   public async getStats(category: name, tokenName: name | null = null) {
-    return this.getTableRows('stats', {
+    return this.getTableRows('dgoodstats', {
       scope: encodeName(category),
       model: Stats,
       firstOnly: !!tokenName,
@@ -220,7 +220,7 @@ export class DGoods {
    * @param tokeninfoId
    */
   public async getTokenInfo(tokeninfoId: uint64_t | null = null) {
-    return this.getTableRows('token', {
+    return this.getTableRows('dgood', {
       model: TokenInfo,
       firstOnly: tokeninfoId !== null,
       rowsOnly: tokeninfoId === null,
@@ -294,19 +294,19 @@ export class DGoods {
     })
   }
 
-  public burnnft(owner: Account, tokeninfoIds: uint64_t[]) {
+  public burnnft(owner: Account, dgoodIds: uint64_t[]) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'create',
       data: {
         owner: owner.name,
-        tokeninfo_ids: tokeninfoIds
+        dgood_ids: dgoodIds
       },
       authorization: this.actionAuth(owner)
     })
   }
 
-  public burn(owner: Account, categoryNameId: uint64_t, quantity: string) {
+  public burnft(owner: Account, categoryNameId: uint64_t, quantity: string) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'create',
@@ -319,22 +319,10 @@ export class DGoods {
     })
   }
 
-  public setrampayer(payer: Account, id: uint64_t) {
-    return this.actionResult({
-      account: this.contractAccount,
-      name: 'setrampayer',
-      data: {
-        payer: payer.name,
-        id
-      },
-      authorization: this.actionAuth(payer)
-    })
-  }
-
   public transfernft(
     from: Account,
     to: name,
-    tokeninfoIds: uint64_t[],
+    dgoodIds: uint64_t[],
     memo: string
   ) {
     return this.actionResult({
@@ -343,14 +331,14 @@ export class DGoods {
       data: {
         from: from.name,
         to,
-        tokeninfo_ids: tokeninfoIds,
+        dgood_ids: dgoodIds,
         memo
       },
       authorization: this.actionAuth(from)
     })
   }
 
-  public transfer(
+  public transferft(
     from: Account,
     to: name,
     category: name,
