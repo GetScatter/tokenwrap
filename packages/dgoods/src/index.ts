@@ -113,7 +113,7 @@ export class TokenInfo {
   // tslint:disable-next-line: variable-name
   public readonly token_name!: name
   // tslint:disable-next-line: variable-name
-  public readonly relative_uri!: string
+  public readonly relative_uri?: string
 }
 
 export class DGoods {
