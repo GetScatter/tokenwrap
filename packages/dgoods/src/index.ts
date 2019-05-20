@@ -40,7 +40,6 @@ export class Configs {
   public readonly standard!: name
   public readonly version!: string
   public readonly symbol!: symbol_code
-  // tslint:disable-next-line: variable-name
   public readonly category_name_id!: uint64_t
 }
 
@@ -67,17 +66,11 @@ export class Stats {
   public readonly burnable!: boolean
   public readonly transferable!: boolean
   public readonly issuer!: name
-  // tslint:disable-next-line: variable-name
   public readonly token_name!: name
-  // tslint:disable-next-line: variable-name
   public readonly category_name_id!: uint64_t
-  // tslint:disable-next-line: variable-name
   public readonly max_supply!: dasset
-  // tslint:disable-next-line: variable-name
   public readonly current_supply!: uint64_t
-  // tslint:disable-next-line: variable-name
   public readonly issued_supply!: uint64_t
-  // tslint:disable-next-line: variable-name
   public readonly base_uri!: string
 }
 
@@ -90,10 +83,8 @@ export class TokenBalance {
     p.amount = DAsset.fromJson(json.amount)
     return p
   }
-  // tslint:disable-next-line: variable-name
   public readonly category_name_id!: uint64_t
   public readonly category!: name
-  // tslint:disable-next-line: variable-name
   public readonly token_name!: name
   public readonly amount!: DAsset
 }
@@ -106,13 +97,10 @@ export class TokenInfo {
     return (Object as any).assign(TokenInfo.placeholder(), json)
   }
   public readonly id!: uint64_t
-  // tslint:disable-next-line: variable-name
   public readonly serial_number!: uint64_t
   public readonly owner!: name
   public readonly category!: name
-  // tslint:disable-next-line: variable-name
   public readonly token_name!: name
-  // tslint:disable-next-line: variable-name
   public readonly relative_uri?: string
 }
 

@@ -10,7 +10,8 @@
     "no-return-await": true,
     "max-classes-per-file": [false, 1],
     "object-literal-sort-keys": false,
-    "interface-name": false
+    "interface-name": false,
+    "variable-name": [true, "check-format", "allow-snake-case"]
   },
   "linterOptions": {
     "exclude": ["**/node_modules/**", "**/dist/**"],
