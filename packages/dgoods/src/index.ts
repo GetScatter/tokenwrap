@@ -111,7 +111,7 @@ export class Asks {
     return new TokenInfo()
   }
   public static fromJson(json: any) {
-    return (Object as any).assign(TokenInfo.placeholder(), json)
+    return (Object as any).assign(Asks.placeholder(), json)
   }
   public readonly dgood_id!: uint64_t
   public readonly seller!: name
