@@ -237,7 +237,7 @@ export class DGoods {
    */
   public async getAsk(tokeninfoId: uint64_t | null = null) {
     return this.getTableRows('asks', {
-      model: TokenInfo,
+      model: Asks,
       firstOnly: tokeninfoId !== null,
       rowsOnly: tokeninfoId === null,
       index: tokeninfoId !== null ? tokeninfoId : null
