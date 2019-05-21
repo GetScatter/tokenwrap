@@ -4,6 +4,8 @@ type name = string
 type symbol_code = string
 type uint64_t = number
 type dasset = string
+type asset = string
+type time_point_sec = string
 interface Account {
   name: name
   authority?: string
@@ -102,6 +104,19 @@ export class TokenInfo {
   public readonly category!: name
   public readonly token_name!: name
   public readonly relative_uri?: string
+}
+
+export class Asks {
+  public static placeholder() {
+    return new TokenInfo()
+  }
+  public static fromJson(json: any) {
+    return (Object as any).assign(TokenInfo.placeholder(), json)
+  }
+  public readonly dgood_id!: uint64_t
+  public readonly seller!: name
+  public readonly amount!: asset
+  public readonly expiration!: time_point_sec
 }
 
 export class DGoods {
@@ -204,11 +219,24 @@ export class DGoods {
   }
 
   /***
-   * Specify a token_name to get it, or none to get all.
+   * Specify a tokeninfoId to get it, or none to get all.
    * @param tokeninfoId
    */
   public async getTokenInfo(tokeninfoId: uint64_t | null = null) {
     return this.getTableRows('dgood', {
+      model: TokenInfo,
+      firstOnly: tokeninfoId !== null,
+      rowsOnly: tokeninfoId === null,
+      index: tokeninfoId !== null ? tokeninfoId : null
+    })
+  }
+  
+  /***
+   * Specify a tokeninfoId to get it, or none to get all.
+   * @param tokeninfoId
+   */
+  public async getAsk(tokeninfoId: uint64_t | null = null) {
+    return this.getTableRows('asks', {
       model: TokenInfo,
       firstOnly: tokeninfoId !== null,
       rowsOnly: tokeninfoId === null,
@@ -239,6 +267,7 @@ export class DGoods {
     fungible: boolean,
     burnable: boolean,
     transferable: boolean,
+    baseUri: string,
     maxSupply: string
   ) {
     return this.actionResult({
@@ -251,6 +280,7 @@ export class DGoods {
         fungible,
         burnable,
         transferable,
+        base_uri: baseUri
         max_supply: maxSupply
       },
       authorization: this.actionAuth(issuer)
@@ -263,7 +293,7 @@ export class DGoods {
     tokenName: name,
     quantity: string,
     metadataType: string,
-    metadataUri: string,
+    relativeUri: string,
     memo: string
   ) {
     return this.actionResult({
@@ -274,8 +304,7 @@ export class DGoods {
         category,
         token_name: tokenName,
         quantity,
-        metadata_type: metadataType,
-        metadata_uri: metadataUri,
+        relative_uri: relativeUri,
         memo
       },
       authorization: this.actionAuth(this.contractAccount)
@@ -346,6 +375,31 @@ export class DGoods {
         memo
       },
       authorization: this.actionAuth(from)
+    })
+  }
+  
+  public listsalenft(seller: Account, dgoodId: uint64_t, netSaleAmount: asset) {
+    return this.actionResult({
+      account: this.contractAccount,
+      name: 'listsalenft',
+      data: {
+        seller: seller.name,
+        dgood_id: dgoodId,
+        net_sale_amount: netSaleAmount
+      },
+      authorization: this.actionAuth(seller)
+    })
+  }
+  
+  public closesalenft(seller: Account, dgoodId: uint64_t) {
+    return this.actionResult({
+      account: this.contractAccount,
+      name: 'closesalenft',
+      data: {
+        seller: seller.name,
+        dgood_id: dgoodId
+      },
+      authorization: this.actionAuth(seller)
     })
   }
 
