@@ -93,7 +93,7 @@ describe('dGoods SDK', () => {
   it('should be able to transact multiple actions', async () => {
     await dgoods.transact([
       dgoods.setconfig('EOS', '1.0.0'),
-      dgoods.setrampayer({ name: 'test11user' }, 1)
+      dgoods.setconfig('EOS', '1.0.1'),
     ])
   })
 
@@ -118,7 +118,7 @@ describe('dGoods SDK', () => {
           }
         ]
       },
-      dgoods.setrampayer({ name: 'test11user' }, 1)
+      dgoods.setconfig('EOS', '1.0.1'),
     ])
   })
 })
