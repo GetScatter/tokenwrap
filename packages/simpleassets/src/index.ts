@@ -1,7 +1,9 @@
+// @ts-ignore
 import { encodeName, getTableRowsBuilder } from '@tokenwrap/core-eosio'
 
 type name = string
-type symbol = string
+// @ts-ignore
+type _symbol = string
 type uint64_t = number
 type asset = string
 interface Account {
@@ -22,12 +24,7 @@ export class Configs {
   }
   public readonly standard!: name
   public readonly version!: string
-}			asset		supply;
-			asset		max_supply;
-			name		issuer;
-			uint64_t 	id;
-			bool		authorctrl;
-			string		data;
+}
 
 export class Stats {
   public static placeholder() {
@@ -208,7 +205,7 @@ export class SimpleAssets {
       index: null
     })
   }
-  
+
   /***
    * Specify an author to get it, or none to get all.
    * @param author
@@ -278,17 +275,6 @@ export class SimpleAssets {
   /*********************************/
   /******  METHOD FORMATTERS  ******/
   /*********************************/
-
-  public updatever(version: string) {
-    return this.actionResult({
-      account: this.contractAccount,
-      name: 'updatever',
-      data: {
-        version
-      },
-      authorization: this.actionAuth(this.contractAccount)
-    })
-  }
   
   public updatever(version: string) {
     return this.actionResult({
@@ -370,7 +356,7 @@ export class SimpleAssets {
     to: name,
     assetIds: uint64_t[],
     memo: string
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'transfer',
@@ -389,7 +375,7 @@ export class SimpleAssets {
     owner: name,
     assetIds: uint64_t[],
     mdata: string
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'update',
@@ -408,7 +394,7 @@ export class SimpleAssets {
     newOwner: name,
     assetIds: uint64_t[],
     memo: string
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'offer',
@@ -425,7 +411,7 @@ export class SimpleAssets {
   public canceloffer(
     owner: Account,
     assetIds: uint64_t[]
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'canceloffer',
@@ -441,7 +427,7 @@ export class SimpleAssets {
     owner: Account,
     assetIds: uint64_t[],
     memo: string
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'burn',
@@ -460,7 +446,7 @@ export class SimpleAssets {
     assetIds: uint64_t[],
     period: uint64_t,
     memo: string
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'delegate',
@@ -479,7 +465,7 @@ export class SimpleAssets {
     owner: Account,
     from: name,
     assetIds: uint64_t[]
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'undelegate',
@@ -496,7 +482,7 @@ export class SimpleAssets {
     owner: Account,
     assetIdc: uint64_t,
     assetIds: uint64_t[]
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'attach',
@@ -513,7 +499,7 @@ export class SimpleAssets {
     owner: Account,
     assetIdc: uint64_t,
     assetIds: uint64_t[]
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'detach',
@@ -531,7 +517,7 @@ export class SimpleAssets {
     author: name,
     quantity: asset,
     assetIdc: uint64_t,
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'attachf',
@@ -550,7 +536,7 @@ export class SimpleAssets {
     author: name,
     quantity: asset,
     assetIdc: uint64_t,
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'detachf',
@@ -566,9 +552,9 @@ export class SimpleAssets {
   
   public updatef(
     author: Account,
-    sym: symbol,
+    sym: _symbol,
     data: string
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'updatef',
@@ -586,7 +572,7 @@ export class SimpleAssets {
     author: Account,
     quantity: asset,
     memo: string
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'transferf',
@@ -606,7 +592,7 @@ export class SimpleAssets {
     author: name,
     quantity: asset,
     memo: string
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'transferf',
@@ -627,7 +613,7 @@ export class SimpleAssets {
     author: name,
     quantity: asset,
     memo: string
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'offerf',
@@ -645,7 +631,7 @@ export class SimpleAssets {
   public cancelofferf(
     owner: Account,
     ftOfferIds: uint64_t[]
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'cancelofferf',
@@ -660,7 +646,7 @@ export class SimpleAssets {
   public claimf(
     claimer: Account,
     ftOfferIds: uint64_t[]
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'claimf',
@@ -672,14 +658,12 @@ export class SimpleAssets {
     })
   }
   
-  ACTION burnf( name from, name author, asset quantity, string memo );
-  
   public burnf(
     from: Account,
-    author: name
+    author: name,
     quantity: asset,
     memo: string
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'burnf',
@@ -695,10 +679,10 @@ export class SimpleAssets {
   
   public openf(
     owner: name,
-    author: name
-    symbol: symbol,
+    author: name,
+    symbol: _symbol,
     ramPayer: Account
-  )
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'openf',
@@ -714,9 +698,9 @@ export class SimpleAssets {
   
   public closef(
     owner: Account,
-    author: name
-    symbol: symbol
-  )
+    author: name,
+    symbol: _symbol
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'closef',

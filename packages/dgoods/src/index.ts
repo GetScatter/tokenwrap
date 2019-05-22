@@ -1,3 +1,4 @@
+// @ts-ignore
 import { encodeName, getTableRowsBuilder } from '@tokenwrap/core-eosio'
 
 type name = string
@@ -230,7 +231,7 @@ export class DGoods {
       index: tokeninfoId !== null ? tokeninfoId : null
     })
   }
-  
+
   /***
    * Specify a tokeninfoId to get it, or none to get all.
    * @param tokeninfoId
@@ -280,7 +281,7 @@ export class DGoods {
         fungible,
         burnable,
         transferable,
-        base_uri: baseUri
+        base_uri: baseUri,
         max_supply: maxSupply
       },
       authorization: this.actionAuth(issuer)
@@ -377,7 +378,7 @@ export class DGoods {
       authorization: this.actionAuth(from)
     })
   }
-  
+
   public listsalenft(seller: Account, dgoodId: uint64_t, netSaleAmount: asset) {
     return this.actionResult({
       account: this.contractAccount,
@@ -390,7 +391,7 @@ export class DGoods {
       authorization: this.actionAuth(seller)
     })
   }
-  
+
   public closesalenft(seller: Account, dgoodId: uint64_t) {
     return this.actionResult({
       account: this.contractAccount,
