@@ -6,7 +6,7 @@ const { assert } = chai
 /// @ts-ignore
 import * as Eos from 'eosjs'
 import 'mocha'
-import { SimpleAssets } from '../src/index'
+import SimpleAssets from '../src/index'
 
 describe('Simple Assets SDK', () => {
   let simpleassets: SimpleAssets = null as any

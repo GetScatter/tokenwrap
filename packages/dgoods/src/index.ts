@@ -120,7 +120,7 @@ export class Asks {
   public readonly expiration!: time_point_sec
 }
 
-export class DGoods {
+export default class DGoods {
   private eos: any
   private isLegacy: boolean
   private contractAccount: name

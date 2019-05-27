@@ -125,7 +125,7 @@ export class Delegate {
   public readonly period!: uint64_t
 }
 
-export class SimpleAssets {
+export default class SimpleAssets {
   private eos: any
   private isLegacy: boolean
   private contractAccount: name
