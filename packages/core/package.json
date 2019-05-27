@@ -1,5 +1,5 @@
 {
-  "name": "@tokenwrap/dgoods",
+  "name": "@tokenwrap/core",
   "version": "0.0.0",
   "author": "GetScatter Ltd.",
   "license": "MIT",
@@ -14,9 +14,5 @@
   "scripts": {
     "build": "echo \"Error: build from root\" && exit 1",
     "test": "echo \"Error: run tests from root\" && exit 1"
-  },
-  "dependencies": {
-    "@tokenwrap/core-eosio": "^0.0.0",
-    "@tokenwrap/core": "^0.0.0"
   }
 }

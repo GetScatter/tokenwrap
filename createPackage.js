@@ -19,7 +19,7 @@ const PACKAGE_NAME = args[0];
 const PACKAGE_DIR = getPackageDirectory(PACKAGE_NAME);
 
 const PACKAGE_JSON = {
-  name: PACKAGE_NAME,
+  name: `@tokenwrap/${PACKAGE_NAME}`,
   version: "0.0.0",
   author: "GetScatter Ltd.",
   license: "MIT",
