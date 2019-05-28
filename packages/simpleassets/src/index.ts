@@ -53,7 +53,6 @@ export class Author {
   public readonly stemplate!: string
 }
 
-
 export class TokenBalance {
   public static placeholder() {
     return new TokenBalance()
@@ -233,7 +232,7 @@ export class SimpleAssets {
       index: tokeninfoId !== null ? tokeninfoId : null
     })
   }
-  
+
   /***
    * Specify a tokeninfoId to get it, or none to get all.
    * @param tokeninfoId
@@ -246,7 +245,7 @@ export class SimpleAssets {
       index: tokeninfoId !== null ? tokeninfoId : null
     })
   }
-  
+
   /***
    * Gets the fungible token offers
    */
@@ -258,7 +257,7 @@ export class SimpleAssets {
       index: null
     })
   }
-  
+
   /***
    * Specify a tokeninfoId to get it, or none to get all.
    * @param tokeninfoId
@@ -275,7 +274,7 @@ export class SimpleAssets {
   /*********************************/
   /******  METHOD FORMATTERS  ******/
   /*********************************/
-  
+
   public updatever(version: string) {
     return this.actionResult({
       account: this.contractAccount,
@@ -299,7 +298,7 @@ export class SimpleAssets {
       authorization: this.actionAuth(author)
     })
   }
-  
+
   public authorupdate(author: name, data: string, sTemplate: string) {
     return this.actionResult({
       account: this.contractAccount,
@@ -312,7 +311,7 @@ export class SimpleAssets {
       authorization: this.actionAuth(author)
     })
   }
-  
+
   public create(
     author: Account,
     category: name,
@@ -335,11 +334,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(author)
     })
   }
-  
-  public claim(
-    claimer: Account,
-    assetIds: uint64_t[]
-  ) {
+
+  public claim(claimer: Account, assetIds: uint64_t[]) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'claim',
@@ -350,13 +346,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(claimer)
     })
   }
-  
-  public transfer(
-    from: Account,
-    to: name,
-    assetIds: uint64_t[],
-    memo: string
-  ) {
+
+  public transfer(from: Account, to: name, assetIds: uint64_t[], memo: string) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'transfer',
@@ -369,7 +360,7 @@ export class SimpleAssets {
       authorization: this.actionAuth(from)
     })
   }
-  
+
   public update(
     author: Account,
     owner: name,
@@ -407,11 +398,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(owner)
     })
   }
-  
-  public canceloffer(
-    owner: Account,
-    assetIds: uint64_t[]
-  ) {
+
+  public canceloffer(owner: Account, assetIds: uint64_t[]) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'canceloffer',
@@ -422,12 +410,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(owner)
     })
   }
-  
-  public burn(
-    owner: Account,
-    assetIds: uint64_t[],
-    memo: string
-  ) {
+
+  public burn(owner: Account, assetIds: uint64_t[], memo: string) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'burn',
@@ -460,12 +444,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(owner)
     })
   }
-  
-  public undelegate(
-    owner: Account,
-    from: name,
-    assetIds: uint64_t[]
-  ) {
+
+  public undelegate(owner: Account, from: name, assetIds: uint64_t[]) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'undelegate',
@@ -477,12 +457,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(owner)
     })
   }
-  
-  public attach(
-    owner: Account,
-    assetIdc: uint64_t,
-    assetIds: uint64_t[]
-  ) {
+
+  public attach(owner: Account, assetIdc: uint64_t, assetIds: uint64_t[]) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'attach',
@@ -494,12 +470,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(owner)
     })
   }
-  
-  public detach(
-    owner: Account,
-    assetIdc: uint64_t,
-    assetIds: uint64_t[]
-  ) {
+
+  public detach(owner: Account, assetIdc: uint64_t, assetIds: uint64_t[]) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'detach',
@@ -511,12 +483,12 @@ export class SimpleAssets {
       authorization: this.actionAuth(owner)
     })
   }
-  
+
   public attachf(
     owner: Account,
     author: name,
     quantity: asset,
-    assetIdc: uint64_t,
+    assetIdc: uint64_t
   ) {
     return this.actionResult({
       account: this.contractAccount,
@@ -525,17 +497,17 @@ export class SimpleAssets {
         owner: owner.name,
         author,
         quantity,
-        assetidc: assetIdc,
+        assetidc: assetIdc
       },
       authorization: this.actionAuth(owner)
     })
   }
-  
+
   public detachf(
     owner: Account,
     author: name,
     quantity: asset,
-    assetIdc: uint64_t,
+    assetIdc: uint64_t
   ) {
     return this.actionResult({
       account: this.contractAccount,
@@ -544,17 +516,13 @@ export class SimpleAssets {
         owner: owner.name,
         author,
         quantity,
-        assetidc: assetIdc,
+        assetidc: assetIdc
       },
       authorization: this.actionAuth(owner)
     })
   }
-  
-  public updatef(
-    author: Account,
-    sym: _symbol,
-    data: string
-  ) {
+
+  public updatef(author: Account, sym: _symbol, data: string) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'updatef',
@@ -566,13 +534,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(author)
     })
   }
-  
-  public issuef(
-    to: name,
-    author: Account,
-    quantity: asset,
-    memo: string
-  ) {
+
+  public issuef(to: name, author: Account, quantity: asset, memo: string) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'transferf',
@@ -585,7 +548,7 @@ export class SimpleAssets {
       authorization: this.actionAuth(author)
     })
   }
-  
+
   public transferf(
     from: Account,
     to: name,
@@ -606,7 +569,7 @@ export class SimpleAssets {
       authorization: this.actionAuth(from)
     })
   }
-  
+
   public offerf(
     owner: Account,
     newOwner: name,
@@ -627,11 +590,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(owner)
     })
   }
-  
-  public cancelofferf(
-    owner: Account,
-    ftOfferIds: uint64_t[]
-  ) {
+
+  public cancelofferf(owner: Account, ftOfferIds: uint64_t[]) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'cancelofferf',
@@ -642,11 +602,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(owner)
     })
   }
-  
-  public claimf(
-    claimer: Account,
-    ftOfferIds: uint64_t[]
-  ) {
+
+  public claimf(claimer: Account, ftOfferIds: uint64_t[]) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'claimf',
@@ -657,13 +614,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(claimer)
     })
   }
-  
-  public burnf(
-    from: Account,
-    author: name,
-    quantity: asset,
-    memo: string
-  ) {
+
+  public burnf(from: Account, author: name, quantity: asset, memo: string) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'burnf',
@@ -676,13 +628,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(from)
     })
   }
-  
-  public openf(
-    owner: name,
-    author: name,
-    symbol: _symbol,
-    ramPayer: Account
-  ) {
+
+  public openf(owner: name, author: name, symbol: _symbol, ramPayer: Account) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'openf',
@@ -695,12 +642,8 @@ export class SimpleAssets {
       authorization: this.actionAuth(ramPayer)
     })
   }
-  
-  public closef(
-    owner: Account,
-    author: name,
-    symbol: _symbol
-  ) {
+
+  public closef(owner: Account, author: name, symbol: _symbol) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'closef',
