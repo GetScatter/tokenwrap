@@ -4,17 +4,17 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "clean:deps": "lerna clean --yes && rm -rf node_modules",
-    "clean:dist": "rm -rf packages/*/dist",
+    "clean:dist": "shglob -c 'rm -rf' -g 'packages/*/dist'",
     "clean:bundles": "rm -rf bundles",
     "clean": "npm run clean:deps && npm run clean:dist && npm run clean:bundles",
-    "build": "npm run clean:dist && tsc --build packages/*/tsconfig.package.json",
-    "watch": "npm run clean:dist && tsc --build packages/*/tsconfig.package.json --watch",
+    "build": "npm run clean:dist && shglob -c 'tsc --build' -g 'packages/*/tsconfig.package.json'",
+    "watch": "npm run clean:dist && shglob -c 'tsc --build --watch' -g 'packages/*/tsconfig.package.json'",
     "bundle": "npm run clean:bundles && rollup -c",
     "create": "node createPackage.js",
     "lint": "tslint --project tsconfig.json --config tslint.json 'packages/*/src/**/*.ts' 'packages/*/__tests__/**/*.ts'",
     "lint-fix": "npm run lint -- --fix",
     "publish": "npm run build && npm run bundle && lerna publish",
-    "test": "mocha -r ts-node/register packages/**/__tests__/*.spec.ts --exit --timeout 1000000"
+    "test": "mocha -r ts-node/register 'packages/**/__tests__/*.spec.ts' --exit --timeout 1000000"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
@@ -32,6 +32,7 @@
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-node-resolve": "^5.0.0",
     "rollup-plugin-typescript": "^1.0.1",
+    "shglob": "^1.0.1",
     "ts-node": "^8.1.0",
     "tslib": "^1.9.3",
     "tslint": "^5.16.0",
