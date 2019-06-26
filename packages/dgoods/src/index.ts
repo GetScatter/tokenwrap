@@ -1,8 +1,5 @@
 // @ts-ignore
 import { encodeName, getTableRowsBuilder } from '@tokenwrap/core-eosio'
-// @ts-ignore
-import { TokenWrapper, Token } from '@tokenwrap/core';
-import { Contract } from "@tokenwrap/core/src";
 
 type name = string
 type symbol_code = string
@@ -80,42 +77,19 @@ export class Stats {
   public readonly base_uri!: string
 }
 
-export class DGoodsToken implements Token {
-
-  public contract!:Contract;
-  public id!:string;
-  public name!:string;
-  public quantity!:number | string;
-  public json!:any | null;
-
-  // Bound after the fact. see `getBalances`
-  public owner!:string;
-
-  // DGoods specific
-  public category!: name
-
+export class TokenBalance {
   public static placeholder() {
-    return new DGoodsToken()
+    return new TokenBalance()
   }
   public static fromJson(json: any) {
-    let p = DGoodsToken.placeholder();
-    p.name = json.token_name;
-    p.id = json.category_name_id;
-    p.quantity = parseFloat(json.amount.amount).toFixed(json.amount.precision);
-    p.category = json.category;
-
-    // const p = (Object as any).assign(DGoodsToken.placeholder(), json)
-    // p.amount = DAsset.fromJson(json.amount)
+    const p = (Object as any).assign(TokenBalance.placeholder(), json)
+    p.amount = DAsset.fromJson(json.amount)
     return p
   }
-
-  async image(){
-    return '';
-  }
-
-  async metadata(){
-    return {};
-  }
+  public readonly category_name_id!: uint64_t
+  public readonly category!: name
+  public readonly token_name!: name
+  public readonly amount!: DAsset
 }
 
 export class TokenInfo {
@@ -146,7 +120,7 @@ export class Asks {
   public readonly expiration!: time_point_sec
 }
 
-export default class DGoods implements TokenWrapper {
+export default class DGoods {
   private eos: any
   private isLegacy: boolean
   private contractAccount: name
@@ -210,13 +184,10 @@ export default class DGoods implements TokenWrapper {
   ) {
     return this.getTableRows('accounts', {
       scope: encodeName(accountName),
-      model: DGoodsToken,
+      model: TokenBalance,
       firstOnly: categoryNameId !== null,
       rowsOnly: categoryNameId === null,
       index: categoryNameId !== null ? categoryNameId : null
-    }).then((tokens:Array<DGoodsToken>) => {
-      tokens.map((token:DGoodsToken) => token.owner = accountName);
-      return tokens;
     })
   }
 

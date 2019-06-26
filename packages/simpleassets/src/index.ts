@@ -1,7 +1,5 @@
 // @ts-ignore
 import { encodeName, getTableRowsBuilder } from '@tokenwrap/core-eosio'
-// @ts-ignore
-import { TokenWrapper } from '@tokenwrap/core'
 
 type name = string
 // @ts-ignore
@@ -127,7 +125,7 @@ export class Delegate {
   public readonly period!: uint64_t
 }
 
-export default class SimpleAssets implements TokenWrapper {
+export default class SimpleAssets {
   private eos: any
   private isLegacy: boolean
   private contractAccount: name

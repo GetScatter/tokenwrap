@@ -1,5 +1,5 @@
 {
-  "name": "@tokenwrap/tokenwrap",
+  "name": "tokenwrap",
   "version": "0.0.0",
   "author": "GetScatter Ltd.",
   "license": "MIT",
@@ -14,9 +14,5 @@
   "scripts": {
     "build": "echo \"Error: build from root\" && exit 1",
     "test": "echo \"Error: run tests from root\" && exit 1"
-  },
-  "devDependencies": {
-    "@tokenwrap/dgoods": "^0.0.0",
-    "@tokenwrap/simpleassets": "^0.0.0"
   }
 }
