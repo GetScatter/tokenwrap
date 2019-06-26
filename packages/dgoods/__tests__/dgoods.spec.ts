@@ -6,7 +6,7 @@ const { assert } = chai
 /// @ts-ignore
 import * as Eos from 'eosjs'
 import 'mocha'
-import DGoods from '../src/index'
+import { DGoods } from '../src/index'
 
 describe('dGoods SDK', () => {
   let dgoods: DGoods = null as any
