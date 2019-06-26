@@ -20,5 +20,4 @@ describe('Simple Assets SDK', () => {
   it('should be able to get the token configs', async () => {
     assert(await simpleassets.getConfig(), 'Could not get token configs')
   })
-
 })
