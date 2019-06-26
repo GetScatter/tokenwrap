@@ -55,4 +55,3 @@ fs.writeFileSync(
 fs.writeFileSync(`${PACKAGE_DIR}/src/index.ts`, "");
 
 console.log(`Successfully created package ${PACKAGE_NAME}`);
-require('./alignPackageJson');
