@@ -1,2 +1,2 @@
 export { encodeName } from './encoders'
-export { getTableRowsBuilder } from './fetchers'
+export { Action, SendableAction, WrappedEos, Authorization } from './wrappedEos'

@@ -1,20 +1,10 @@
-// @ts-ignore
-import { encodeName, getTableRowsBuilder } from '@tokenwrap/core-eosio'
-
-type name = string
-type symbol_code = string
-type uint64_t = number
-type dasset = string
-type asset = string
-type time_point_sec = string
-interface Account {
-  name: name
-  authority?: string
-}
-interface Action {
-  json: object
-  send: any
-}
+import {
+  Action,
+  Authorization,
+  encodeName,
+  SendableAction,
+  WrappedEos
+} from '@tokenwrap/core-eosio'
 
 export class DAsset {
   public static placeholder() {
@@ -262,7 +252,7 @@ export class DGoods {
   }
 
   public create(
-    issuer: Account,
+    issuer: Authorization,
     category: name,
     tokenName: name,
     fungible: boolean,
@@ -312,7 +302,7 @@ export class DGoods {
     })
   }
 
-  public burnnft(owner: Account, dgoodIds: uint64_t[]) {
+  public burnnft(owner: Authorization, dgoodIds: uint64_t[]) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'create',
@@ -324,7 +314,11 @@ export class DGoods {
     })
   }
 
-  public burnft(owner: Account, categoryNameId: uint64_t, quantity: string) {
+  public burnft(
+    owner: Authorization,
+    categoryNameId: uint64_t,
+    quantity: string
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'create',
@@ -338,7 +332,7 @@ export class DGoods {
   }
 
   public transfernft(
-    from: Account,
+    from: Authorization,
     to: name,
     dgoodIds: uint64_t[],
     memo: string
@@ -357,7 +351,7 @@ export class DGoods {
   }
 
   public transferft(
-    from: Account,
+    from: Authorization,
     to: name,
     category: name,
     tokenName: name,
@@ -379,7 +373,11 @@ export class DGoods {
     })
   }
 
-  public listsalenft(seller: Account, dgoodId: uint64_t, netSaleAmount: asset) {
+  public listsalenft(
+    seller: Authorization,
+    dgoodId: uint64_t,
+    netSaleAmount: asset
+  ) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'listsalenft',
@@ -392,7 +390,7 @@ export class DGoods {
     })
   }
 
-  public closesalenft(seller: Account, dgoodId: uint64_t) {
+  public closesalenft(seller: Authorization, dgoodId: uint64_t) {
     return this.actionResult({
       account: this.contractAccount,
       name: 'closesalenft',
