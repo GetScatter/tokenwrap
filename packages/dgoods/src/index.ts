@@ -6,23 +6,6 @@ import {
   WrappedEos
 } from '@tokenwrap/core-eosio'
 
-export class DAsset {
-  public static placeholder() {
-    return new DAsset()
-  }
-  public static fromJson(json: any) {
-    return (Object as any).assign(DAsset.placeholder(), json)
-  }
-  public readonly amount!: number
-  public readonly precision!: number
-
-  public toString() {
-    return parseFloat(this.amount.toString())
-      .toFixed(this.precision)
-      .toString()
-  }
-}
-
 export class Configs {
   public static placeholder() {
     return new Configs()
@@ -51,9 +34,7 @@ export class Stats {
     return new Stats()
   }
   public static fromJson(json: any) {
-    const p = (Object as any).assign(Stats.placeholder(), json)
-    p.max_supply = DAsset.fromJson(json.max_supply)
-    return p
+    return Object.assign(Stats.placeholder(), json)
   }
   public readonly fungible!: boolean
   public readonly burnable!: boolean
@@ -61,7 +42,7 @@ export class Stats {
   public readonly issuer!: name
   public readonly token_name!: name
   public readonly category_name_id!: uint64_t
-  public readonly max_supply!: dasset
+  public readonly max_supply!: asset
   public readonly current_supply!: uint64_t
   public readonly issued_supply!: uint64_t
   public readonly base_uri!: string
@@ -72,14 +53,12 @@ export class TokenBalance {
     return new TokenBalance()
   }
   public static fromJson(json: any) {
-    const p = (Object as any).assign(TokenBalance.placeholder(), json)
-    p.amount = DAsset.fromJson(json.amount)
-    return p
+    return Object.assign(TokenBalance.placeholder(), json)
   }
   public readonly category_name_id!: uint64_t
   public readonly category!: name
   public readonly token_name!: name
-  public readonly amount!: DAsset
+  public readonly amount!: asset
 }
 
 export class TokenInfo {
