@@ -2,151 +2,116 @@ import {
   Action,
   Authorization,
   encodeName,
+  PaginationOptions,
   SendableAction,
   WrappedEos
 } from '@tokenwrap/core-eosio'
 
+// TODO Check if this type still exists in the spec
 export class DAsset {
-  public static placeholder() {
-    return new DAsset()
+  public amount!: string
+  public precision!: number
+  constructor(json: any) {
+    Object.assign(this, json)
+    this.amount = this.amount.toString()
   }
-  public static fromJson(json: any) {
-    return (Object as any).assign(DAsset.placeholder(), json)
-  }
-  public readonly amount!: number
-  public readonly precision!: number
-
   public toString() {
-    return parseFloat(this.amount.toString())
+    // FIXME This won't work when the amount is bigger than what fits in a JS number type
+    // Should use Long
+    return parseFloat(this.amount)
       .toFixed(this.precision)
       .toString()
   }
 }
 
-export class Configs {
-  public static placeholder() {
-    return new Configs()
+export class Config {
+  public standard!: string
+  public version!: string
+  public symbol!: string
+  public category_name_id!: string
+  constructor(json: any) {
+    Object.assign(this, json)
+    this.category_name_id = this.category_name_id.toString()
   }
-  public static fromJson(json: any) {
-    return Object.assign(Configs.placeholder(), json)
-  }
-  public readonly standard!: name
-  public readonly version!: string
-  public readonly symbol!: symbol_code
-  public readonly category_name_id!: uint64_t
-}
-
-export class Category {
-  public static placeholder() {
-    return new Category()
-  }
-  public static fromJson(json: any) {
-    return (Object as any).assign(Category.placeholder(), json)
-  }
-  public readonly category!: name
 }
 
 export class Stats {
-  public static placeholder() {
-    return new Stats()
+  public fungible!: boolean
+  public burnable!: boolean
+  public transferable!: boolean
+  public issuer!: string
+  public token_name!: string
+  public category_name_id!: string
+  public max_supply!: DAsset
+  public current_supply!: string
+  public issued_supply!: string
+  public base_uri!: string
+  constructor(json: any) {
+    Object.assign(this, json)
+    this.max_supply = new DAsset(this.max_supply)
+    this.category_name_id = this.category_name_id.toString()
+    this.current_supply = this.current_supply.toString()
+    this.issued_supply = this.issued_supply.toString()
   }
-  public static fromJson(json: any) {
-    const p = (Object as any).assign(Stats.placeholder(), json)
-    p.max_supply = DAsset.fromJson(json.max_supply)
-    return p
-  }
-  public readonly fungible!: boolean
-  public readonly burnable!: boolean
-  public readonly transferable!: boolean
-  public readonly issuer!: name
-  public readonly token_name!: name
-  public readonly category_name_id!: uint64_t
-  public readonly max_supply!: dasset
-  public readonly current_supply!: uint64_t
-  public readonly issued_supply!: uint64_t
-  public readonly base_uri!: string
 }
 
 export class TokenBalance {
-  public static placeholder() {
-    return new TokenBalance()
+  public category_name_id!: string
+  public category!: string
+  public token_name!: string
+  public amount!: DAsset
+  constructor(json: any) {
+    Object.assign(this, json)
+    this.category_name_id = this.category_name_id.toString()
+    this.amount = new DAsset(this.amount)
   }
-  public static fromJson(json: any) {
-    const p = (Object as any).assign(TokenBalance.placeholder(), json)
-    p.amount = DAsset.fromJson(json.amount)
-    return p
-  }
-  public readonly category_name_id!: uint64_t
-  public readonly category!: name
-  public readonly token_name!: name
-  public readonly amount!: DAsset
 }
 
-export class TokenInfo {
-  public static placeholder() {
-    return new TokenInfo()
+export class TokenDetails {
+  public id!: string
+  public serial_number!: string
+  public owner!: string
+  public category!: string
+  public token_name!: string
+  public relative_uri?: string
+  constructor(json: any) {
+    Object.assign(this, json)
+    this.id = this.id.toString()
+    this.serial_number = this.serial_number.toString()
   }
-  public static fromJson(json: any) {
-    return (Object as any).assign(TokenInfo.placeholder(), json)
-  }
-  public readonly id!: uint64_t
-  public readonly serial_number!: uint64_t
-  public readonly owner!: name
-  public readonly category!: name
-  public readonly token_name!: name
-  public readonly relative_uri?: string
 }
 
-export class Asks {
-  public static placeholder() {
-    return new TokenInfo()
+export class Ask {
+  public dgood_id!: string
+  public seller!: string
+  public amount!: string
+  public expiration!: string
+  constructor(json: any) {
+    Object.assign(this, json)
+    this.dgood_id = this.dgood_id.toString()
+    this.expiration = this.expiration.toString()
   }
-  public static fromJson(json: any) {
-    return (Object as any).assign(Asks.placeholder(), json)
-  }
-  public readonly dgood_id!: uint64_t
-  public readonly seller!: name
-  public readonly amount!: asset
-  public readonly expiration!: time_point_sec
 }
 
 export class DGoods {
-  private eos: any
-  private isLegacy: boolean
-  private contractAccount: name
-  private getTableRows: any
+  private eos: WrappedEos
+  private contract: string
 
   /***
-   * @param eosReference - an instantiated eosjs@16.0.9 or eosjs@20+ reference.
+   * @param eos - an instantiated eosjs@16.0.9 or eosjs@20+ reference.
    * @param contract - a string of the contract name.
    */
-  constructor(eosReference: any, contract: string) {
-    if (!eosReference) {
+  constructor(eos: any, contract: string) {
+    if (!eos) {
       throw new Error(
         'eosReference must be an instantiated eosjs@16.0.9 or eosjs@20+ reference.'
       )
     }
-    if (!contract.length) {
+    if (!contract || typeof contract !== 'string') {
       throw new Error('contract must be a valid account name')
     }
-
-    this.eos = eosReference
-    this.isLegacy = typeof eosReference.contract === 'function'
-    this.contractAccount = contract
-
-    this.getTableRows = getTableRowsBuilder(this.eos, this.contractAccount)
-  }
-
-  public transact(actions: Array<Action | object>) {
-    return this.transactor()({
-      actions: actions.map(action => {
-        if (action.hasOwnProperty('json')) {
-          return (action as any).json
-        } else {
-          return action
-        }
-      })
-    })
+    this.eos = eos
+    this.contract = contract
   }
 
   /*********************************/
@@ -154,118 +119,213 @@ export class DGoods {
   /*********************************/
 
   /***
-   * Gets the base token configs
+   * Gets the base token config
    */
   public async getConfig() {
-    return this.getTableRows('tokenconfigs', {
-      model: Configs,
-      firstOnly: true
-    })
+    return new Config(
+      await this.eos.getTableRow({ code: this.contract, table: 'tokenconfigs' })
+    )
   }
 
   /***
-   * Specify a category_name_id to get it, or none to get all.
+   * Query the balances of an account
+   * @param accountName
+   * @param paginationOptions
+   */
+  public async getBalances(
+    accountName: string,
+    paginationOptions?: PaginationOptions
+  ) {
+    const results = await this.eos.getTableRows(
+      {
+        code: this.contract,
+        scope: accountName,
+        table: 'accounts'
+      },
+      paginationOptions
+    )
+    results.rows = results.rows.map(r => new TokenBalance(r))
+    return results
+  }
+
+  /***
+   * Get all balances of an account
    * @param accountName
    * @param categoryNameId
    */
-  public async getBalances(
-    accountName: name,
-    categoryNameId: uint64_t | null = null
-  ) {
-    return this.getTableRows('accounts', {
-      scope: encodeName(accountName),
-      model: TokenBalance,
-      firstOnly: categoryNameId !== null,
-      rowsOnly: categoryNameId === null,
-      index: categoryNameId !== null ? categoryNameId : null
-    })
+  public async getBalance(accountName: string, categoryNameId: string) {
+    return new TokenBalance(
+      await this.eos.getTableRow({
+        code: this.contract,
+        scope: encodeName(accountName),
+        table: 'accounts',
+        primaryKey: categoryNameId
+      })
+    )
   }
 
   /***
-   * Specify a category to get it, or none to get all.
+   * Check if a specific category is defined in the contract.
    * @param category
    */
-  public async getCategory(category: name | null = null) {
-    return this.getTableRows('categoryinfo', {
-      model: Category,
-      firstOnly: !!category,
-      rowsOnly: !category,
-      index: category ? encodeName(category) : null
+  public async hasCategory(category: string) {
+    const result = await this.eos.getTableRow({
+      code: this.contract,
+      table: 'categoryinfo',
+      primaryKey: category
     })
+    return result !== undefined
   }
 
   /***
-   * Specify a token_name to get it, or none to get all.
+   * Query the categories defined in the contract.
+   */
+  public async getCategories(paginationOptions?: PaginationOptions) {
+    return this.eos.getTableRows(
+      {
+        code: this.contract,
+        table: 'categoryinfo'
+      },
+      paginationOptions
+    )
+  }
+
+  /***
+   * Query the token stats list.
+   * @param category
+   */
+  public async getTokenStats(
+    category: string,
+    paginationOptions?: PaginationOptions
+  ): Promise<{ rows: Stats[]; more: boolean }>
+  /***
+   * Get stats about a specific token.
    * @param category
    * @param tokenName
    */
-  public async getStats(category: name, tokenName: name | null = null) {
-    return this.getTableRows('dgoodstats', {
-      scope: encodeName(category),
-      model: Stats,
-      firstOnly: !!tokenName,
-      rowsOnly: !tokenName,
-      index: tokenName ? encodeName(tokenName) : null
-    })
+  public async getTokenStats(
+    category: string,
+    tokenName: string
+  ): Promise<Stats>
+  public async getTokenStats(category: any, option: any): Promise<any> {
+    if (typeof option === 'string') {
+      return new Stats(
+        await this.eos.getTableRow({
+          code: this.contract,
+          scope: category,
+          table: 'dgoodstats',
+          primaryKey: option
+        })
+      )
+    } else {
+      const results = await this.eos.getTableRows(
+        {
+          code: this.contract,
+          scope: category,
+          table: 'dgoodstats'
+        },
+        option
+      )
+      results.rows = results.rows.map(r => new Stats(r))
+      return results
+    }
+  }
+
+  // TODO Add functionality to query by owner account
+  /***
+   * Query the token details list.
+   */
+  public async getTokenDetails(
+    paginationOptions?: PaginationOptions
+  ): Promise<{ rows: TokenDetails[]; more: boolean }>
+  /***
+   * Get the details about a specific token.
+   * @param tokenId
+   */
+  public async getTokenDetails(tokenId: string): Promise<TokenDetails>
+  public async getTokenDetails(option: any): Promise<any> {
+    if (typeof option === 'string') {
+      return new TokenDetails(
+        await this.eos.getTableRow({
+          code: this.contract,
+          table: 'dgood',
+          primaryKey: option
+        })
+      )
+    } else {
+      const results = await this.eos.getTableRows(
+        {
+          code: this.contract,
+          table: 'dgood'
+        },
+        option
+      )
+      results.rows = results.rows.map(r => new TokenDetails(r))
+      return results
+    }
+  }
+
+  // TODO Add functionality to query by seller account
+  /***
+   * Query token sale listings.
+   */
+  public async getAsks(paginationOptions?: PaginationOptions) {
+    const results = await this.eos.getTableRows(
+      {
+        code: this.contract,
+        table: 'dgood'
+      },
+      paginationOptions
+    )
+    results.rows = results.rows.map(r => new Ask(r))
+    return results as { rows: Ask[]; more: boolean }
   }
 
   /***
-   * Specify a tokeninfoId to get it, or none to get all.
-   * @param tokeninfoId
+   * Get a specific token sale listing.
+   * @param tokenId
    */
-  public async getTokenInfo(tokeninfoId: uint64_t | null = null) {
-    return this.getTableRows('dgood', {
-      model: TokenInfo,
-      firstOnly: tokeninfoId !== null,
-      rowsOnly: tokeninfoId === null,
-      index: tokeninfoId !== null ? tokeninfoId : null
-    })
-  }
-
-  /***
-   * Specify a tokeninfoId to get it, or none to get all.
-   * @param tokeninfoId
-   */
-  public async getAsk(tokeninfoId: uint64_t | null = null) {
-    return this.getTableRows('asks', {
-      model: Asks,
-      firstOnly: tokeninfoId !== null,
-      rowsOnly: tokeninfoId === null,
-      index: tokeninfoId !== null ? tokeninfoId : null
-    })
+  public async getAsk(tokenId: string) {
+    return new Ask(
+      await this.eos.getTableRow({
+        code: this.contract,
+        table: 'dgood',
+        primaryKey: tokenId
+      })
+    )
   }
 
   /*********************************/
   /******  METHOD FORMATTERS  ******/
   /*********************************/
 
-  public setconfig(symbol: symbol_code, version: string) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public setconfig(symbol: string, version: string) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'setconfig',
       data: {
         symbol,
         version
       },
-      authorization: this.actionAuth(this.contractAccount)
+      authorization: this.getActionAuth(this.contract)
     })
   }
 
   public create(
-    issuer: Authorization,
-    category: name,
-    tokenName: name,
+    issuer: string | Authorization,
+    category: string,
+    tokenName: string,
     fungible: boolean,
     burnable: boolean,
     transferable: boolean,
     baseUri: string,
     maxSupply: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'create',
       data: {
-        issuer: issuer.name,
+        issuer: this.getAuthAccount(issuer),
         category,
         token_name: tokenName,
         fungible,
@@ -274,21 +334,21 @@ export class DGoods {
         base_uri: baseUri,
         max_supply: maxSupply
       },
-      authorization: this.actionAuth(issuer)
+      authorization: this.getActionAuth(issuer)
     })
   }
 
   public issue(
-    to: name,
-    category: name,
-    tokenName: name,
+    to: string,
+    category: string,
+    tokenName: string,
     quantity: string,
     metadataType: string,
     relativeUri: string,
     memo: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'create',
       data: {
         to,
@@ -298,107 +358,107 @@ export class DGoods {
         relative_uri: relativeUri,
         memo
       },
-      authorization: this.actionAuth(this.contractAccount)
+      authorization: this.getActionAuth(this.contract)
     })
   }
 
-  public burnnft(owner: Authorization, dgoodIds: uint64_t[]) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public burnnft(owner: Authorization, dgoodIds: string[]) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'create',
       data: {
-        owner: owner.name,
+        owner: this.getAuthAccount(owner),
         dgood_ids: dgoodIds
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.getActionAuth(owner)
     })
   }
 
   public burnft(
     owner: Authorization,
-    categoryNameId: uint64_t,
+    categoryNameId: string,
     quantity: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'create',
       data: {
-        owner: owner.name,
+        owner: this.getAuthAccount(owner),
         category_name_id: categoryNameId,
         quantity
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.getActionAuth(owner)
     })
   }
 
   public transfernft(
     from: Authorization,
-    to: name,
-    dgoodIds: uint64_t[],
+    to: string,
+    dgoodIds: string[],
     memo: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'create',
       data: {
-        from: from.name,
+        from: this.getAuthAccount(from),
         to,
         dgood_ids: dgoodIds,
         memo
       },
-      authorization: this.actionAuth(from)
+      authorization: this.getActionAuth(from)
     })
   }
 
   public transferft(
     from: Authorization,
-    to: name,
-    category: name,
-    tokenName: name,
+    to: string,
+    category: string,
+    tokenName: string,
     quantity: string,
     memo: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'create',
       data: {
-        from: from.name,
+        from: this.getAuthAccount(from),
         to,
         category,
         token_name: tokenName,
         quantity,
         memo
       },
-      authorization: this.actionAuth(from)
+      authorization: this.getActionAuth(from)
     })
   }
 
   public listsalenft(
     seller: Authorization,
-    dgoodId: uint64_t,
-    netSaleAmount: asset
+    dgoodId: string,
+    netSaleAmount: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'listsalenft',
       data: {
-        seller: seller.name,
+        seller: this.getAuthAccount(seller),
         dgood_id: dgoodId,
         net_sale_amount: netSaleAmount
       },
-      authorization: this.actionAuth(seller)
+      authorization: this.getActionAuth(seller)
     })
   }
 
-  public closesalenft(seller: Authorization, dgoodId: uint64_t) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public closesalenft(seller: Authorization, dgoodId: string) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'closesalenft',
       data: {
-        seller: seller.name,
+        seller: this.getAuthAccount(seller),
         dgood_id: dgoodId
       },
-      authorization: this.actionAuth(seller)
+      authorization: this.getActionAuth(seller)
     })
   }
 
@@ -407,35 +467,37 @@ export class DGoods {
   /*********************************/
 
   /***
-   * Provides a dual return result for action methods.
-   * `send` can be called as a method to transact the JSON.
-   * `method(...).send()` returns a promise.
-   * @param json
+   * Creates a SendableAction instance using the local EOS client.
+   * @param payload
    */
-  private actionResult(json: any) {
-    return { json, send: () => this.transact([json]) }
-  }
-
-  /***
-   * Gets a transactor depending on the version of eosjs
-   */
-  private transactor() {
-    return this.isLegacy ? this.eos.transaction : this.eos.transact
+  private getSendableAction(payload: any) {
+    return new SendableAction(payload, this.eos)
   }
 
   /***
    * Creates an authorization array.
    * @param account
    */
-  private actionAuth(account: any) {
+  private getActionAuth(account: string | Authorization): Authorization[] {
     if (typeof account === 'string') {
       return [{ actor: account, permission: 'active' }]
     }
     return [
       {
-        actor: account.name,
-        permission: account.authority || account.permission || 'active'
+        actor: account.actor,
+        permission: account.permission || 'active'
       }
     ]
+  }
+
+  /***
+   * Extracts the account name from the provided authorization.
+   * @param authorization
+   */
+  private getAuthAccount(authorization: string | Authorization) {
+    if (typeof authorization === 'string') {
+      return authorization
+    }
+    return authorization.actor
   }
 }

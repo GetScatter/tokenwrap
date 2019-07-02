@@ -1,2 +1,8 @@
 export { encodeName } from './encoders'
-export { Action, SendableAction, WrappedEos, Authorization } from './wrappedEos'
+export {
+  Authorization,
+  Action,
+  SendableAction,
+  PaginationOptions,
+  WrappedEos
+} from './wrappedEos'
