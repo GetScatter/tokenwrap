@@ -7,23 +7,6 @@ import {
   WrappedEos
 } from '@tokenwrap/core-eosio'
 
-// TODO Check if this type still exists in the spec
-export class DAsset {
-  public amount!: string
-  public precision!: number
-  constructor(json: any) {
-    Object.assign(this, json)
-    this.amount = this.amount.toString()
-  }
-  public toString() {
-    // FIXME This won't work when the amount is bigger than what fits in a JS number type
-    // Should use Long
-    return parseFloat(this.amount)
-      .toFixed(this.precision)
-      .toString()
-  }
-}
-
 export class Config {
   public standard!: string
   public version!: string
@@ -42,13 +25,12 @@ export class Stats {
   public issuer!: string
   public token_name!: string
   public category_name_id!: string
-  public max_supply!: DAsset
+  public max_supply!: string
   public current_supply!: string
   public issued_supply!: string
   public base_uri!: string
   constructor(json: any) {
     Object.assign(this, json)
-    this.max_supply = new DAsset(this.max_supply)
     this.category_name_id = this.category_name_id.toString()
     this.current_supply = this.current_supply.toString()
     this.issued_supply = this.issued_supply.toString()
@@ -59,11 +41,10 @@ export class TokenBalance {
   public category_name_id!: string
   public category!: string
   public token_name!: string
-  public amount!: DAsset
+  public amount!: string
   constructor(json: any) {
     Object.assign(this, json)
     this.category_name_id = this.category_name_id.toString()
-    this.amount = new DAsset(this.amount)
   }
 }
 
