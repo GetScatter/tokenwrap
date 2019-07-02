@@ -2,33 +2,13 @@ import {
   Action,
   Authorization,
   encodeName,
+  EosioTokenStandard,
   PaginationOptions,
-  SendableAction,
-  WrappedEos
+  SendableAction
 } from '@tokenwrap/core-eosio'
 import { Ask, Config, Stats, TokenBalance, TokenDetails } from './models'
 
-export class DGoods {
-  private eos: WrappedEos
-  private contract: string
-
-  /***
-   * @param eos - an instantiated eosjs@16.0.9 or eosjs@20+ reference.
-   * @param contract - a string of the contract name.
-   */
-  constructor(eos: any, contract: string) {
-    if (!eos) {
-      throw new Error(
-        'eosReference must be an instantiated eosjs@16.0.9 or eosjs@20+ reference.'
-      )
-    }
-    if (!contract || typeof contract !== 'string') {
-      throw new Error('contract must be a valid account name')
-    }
-    this.eos = eos
-    this.contract = contract
-  }
-
+export class DGoods extends EosioTokenStandard {
   /*********************************/
   /********  DATA FETCHERS *********/
   /*********************************/
