@@ -49,7 +49,7 @@ fs.writeFileSync(
 );
 fs.writeFileSync(`${PACKAGE_DIR}/README.md`, `# ${PACKAGE_NAME}`);
 fs.writeFileSync(
-  `${PACKAGE_DIR}/tsconfig.package.json`,
+  `${PACKAGE_DIR}/tsconfig.json`,
   JSON.stringify(TS_CONFIG, null, 2)
 );
 fs.writeFileSync(`${PACKAGE_DIR}/src/index.ts`, "");

@@ -6,3 +6,7 @@ export {
   PaginationOptions,
   WrappedEos
 } from './wrappedEos'
+
+import { TokenStandard } from '@tokenwrap/core'
+
+export class EosioTokenStandard extends TokenStandard {}
