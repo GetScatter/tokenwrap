@@ -211,6 +211,7 @@ export class DGoods extends EosioTokenStandard {
     tokenName: string,
     fungible: boolean,
     burnable: boolean,
+    sellable: boolean,
     transferable: boolean,
     baseUri: string,
     maxSupply: string
@@ -224,6 +225,7 @@ export class DGoods extends EosioTokenStandard {
         token_name: tokenName,
         fungible,
         burnable,
+        sellable,
         transferable,
         base_uri: baseUri,
         max_supply: maxSupply
