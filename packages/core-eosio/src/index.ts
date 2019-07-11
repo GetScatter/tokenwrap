@@ -1,17 +1,16 @@
-export { encodeName } from './encoders'
 export {
   Authorization,
   Action,
   SendableAction,
   PaginationOptions,
-  WrappedEos
-} from './wrappedEos'
+  Morpheos
+} from 'morpheos'
 
 import { TokenStandard } from '@tokenwrap/core'
-import { WrappedEos } from './wrappedEos'
+import { Morpheos } from 'morpheos'
 
 export class EosioTokenStandard extends TokenStandard {
-  protected eos: WrappedEos
+  protected eos: Morpheos
   protected contract: string
 
   /***
@@ -28,7 +27,7 @@ export class EosioTokenStandard extends TokenStandard {
     if (!contract || typeof contract !== 'string') {
       throw new Error('contract must be a valid account name')
     }
-    this.eos = eos
+    this.eos = new Morpheos(eos)
     this.contract = contract
   }
 }

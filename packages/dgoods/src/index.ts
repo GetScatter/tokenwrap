@@ -1,7 +1,6 @@
 import {
   Action,
   Authorization,
-  encodeName,
   EosioTokenStandard,
   PaginationOptions,
   SendableAction
@@ -52,7 +51,7 @@ export class DGoods extends EosioTokenStandard {
     return new TokenBalance(
       await this.eos.getTableRow({
         code: this.contract,
-        scope: encodeName(accountName),
+        scope: accountName,
         table: 'accounts',
         primaryKey: categoryNameId
       })

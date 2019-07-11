@@ -16,10 +16,7 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "long": "^4.0.0",
-    "@tokenwrap/core": "^0.0.0"
-  },
-  "devDependencies": {
-    "@types/long": "^4.0.0"
+    "@tokenwrap/core": "^0.0.0",
+    "morpheos": "^1.0.5"
   }
 }
