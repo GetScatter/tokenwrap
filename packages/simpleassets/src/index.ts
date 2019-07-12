@@ -1,274 +1,211 @@
-// @ts-ignore
-import { encodeName, getTableRowsBuilder } from '@tokenwrap/core-eosio'
+import {
+  Action,
+  Authorization,
+  EosioTokenStandard,
+  PaginationOptions,
+  SendableAction
+} from '@tokenwrap/core-eosio'
+import {
+  Author,
+  Configs as Config,
+  Offer,
+  OfferFungible,
+  Stats,
+  TokenBalance,
+  TokenDelegation,
+  TokenDetails
+} from './models'
 
-type name = string
-// @ts-ignore
-type _symbol = string
-type uint64_t = number
-type asset = string
-interface Account {
-  name: name
-  authority?: string
-}
-interface Action {
-  json: object
-  send: any
-}
-
-export class Configs {
-  public static placeholder() {
-    return new Configs()
-  }
-  public static fromJson(json: any) {
-    return Object.assign(Configs.placeholder(), json)
-  }
-  public readonly standard!: name
-  public readonly version!: string
-}
-
-export class Stats {
-  public static placeholder() {
-    return new Stats()
-  }
-  public static fromJson(json: any) {
-    return Object.assign(Stats.placeholder(), json)
-  }
-  public readonly supply!: asset
-  public readonly max_supply!: asset
-  public readonly issuer!: name
-  public readonly id!: uint64_t
-  public readonly authorctrl!: boolean
-  public readonly data!: string
-}
-
-export class Author {
-  public static placeholder() {
-    return new Author()
-  }
-  public static fromJson(json: any) {
-    return Object.assign(Author.placeholder(), json)
-  }
-  public readonly author!: name
-  public readonly data!: string
-  public readonly stemplate!: string
-}
-
-export class TokenBalance {
-  public static placeholder() {
-    return new TokenBalance()
-  }
-  public static fromJson(json: any) {
-    return Object.assign(TokenBalance.placeholder(), json)
-  }
-  public readonly id!: uint64_t
-  public readonly author!: name
-  public readonly balance!: asset
-}
-
-export class TokenInfo {
-  public static placeholder() {
-    return new TokenInfo()
-  }
-  public static fromJson(json: any) {
-    return (Object as any).assign(TokenInfo.placeholder(), json)
-  }
-  public readonly id!: uint64_t
-  public readonly owner!: name
-  public readonly author!: name
-  public readonly category!: name
-  public readonly idata!: string
-  public readonly mdata!: string
-  public readonly container!: TokenInfo[]
-  public readonly containerf!: TokenBalance[]
-}
-
-export class Offer {
-  public static placeholder() {
-    return new TokenInfo()
-  }
-  public static fromJson(json: any) {
-    return (Object as any).assign(TokenInfo.placeholder(), json)
-  }
-  public readonly assetid!: uint64_t
-  public readonly owner!: name
-  public readonly offeredto!: name
-  public readonly cdate!: uint64_t
-}
-
-export class OfferFungible {
-  public static placeholder() {
-    return new TokenInfo()
-  }
-  public static fromJson(json: any) {
-    return (Object as any).assign(TokenInfo.placeholder(), json)
-  }
-  public readonly id!: uint64_t
-  public readonly author!: name
-  public readonly owner!: name
-  public readonly quantity!: asset
-  public readonly offeredto!: name
-  public readonly cdate!: uint64_t
-}
-
-export class Delegate {
-  public static placeholder() {
-    return new TokenInfo()
-  }
-  public static fromJson(json: any) {
-    return (Object as any).assign(TokenInfo.placeholder(), json)
-  }
-  public readonly assetid!: uint64_t
-  public readonly owner!: name
-  public readonly delegatedto!: name
-  public readonly cdate!: uint64_t
-  public readonly period!: uint64_t
-}
-
-export class SimpleAssets {
-  private eos: any
-  private isLegacy: boolean
-  private contractAccount: name
-  private getTableRows: any
-
-  /***
-   * @param eosReference - an instantiated eosjs@16.0.9 or eosjs@20+ reference.
-   * @param contract - a string of the contract name.
-   */
-  constructor(eosReference: any, contract: string) {
-    if (!eosReference) {
-      throw new Error(
-        'eosReference must be an instantiated eosjs@16.0.9 or eosjs@20+ reference.'
-      )
-    }
-    if (!contract.length) {
-      throw new Error('contract must be a valid account name')
-    }
-
-    this.eos = eosReference
-    this.isLegacy = typeof eosReference.contract === 'function'
-    this.contractAccount = contract
-
-    this.getTableRows = getTableRowsBuilder(this.eos, this.contractAccount)
-  }
-
-  public transact(actions: Array<Action | object>) {
-    return this.transactor()({
-      actions: actions.map(action => {
-        if (action.hasOwnProperty('json')) {
-          return (action as any).json
-        } else {
-          return action
-        }
-      })
-    })
-  }
-
+export class SimpleAssets extends EosioTokenStandard {
   /*********************************/
   /********  DATA FETCHERS *********/
   /*********************************/
 
   /***
-   * Gets the base token configs
+   * Gets the base token config
    */
   public async getConfig() {
-    return this.getTableRows('tokenconfigs', {
-      model: Configs,
-      firstOnly: true
-    })
+    return new Config(
+      await this.eos.getTableRow({ code: this.contract, table: 'tokenconfigs' })
+    )
   }
 
   /***
-   * Specify a accountName to get it.
+   * Query the balances of an account
    * @param accountName
+   * @param paginationOptions
    */
-  public async getBalances(accountName: name) {
-    return this.getTableRows('accounts', {
-      scope: encodeName(accountName),
-      model: TokenBalance,
-      firstOnly: false,
-      rowsOnly: true,
-      index: null
-    })
+  public async getBalances(
+    accountName: string,
+    paginationOptions?: PaginationOptions
+  ) {
+    const results = await this.eos.getTableRows(
+      {
+        code: this.contract,
+        scope: accountName,
+        table: 'accounts'
+      },
+      paginationOptions
+    )
+    results.rows = results.rows.map(r => new TokenBalance(r))
+    return results
   }
 
   /***
-   * Specify an author to get it.
+   * Get stats of a token by specifying its author.
    * @param author
    */
-  public async getStats(author: name) {
-    return this.getTableRows('stat', {
-      scope: encodeName(author),
-      model: Stats,
-      firstOnly: false,
-      rowsOnly: true,
-      index: null
-    })
+  public async getTokenStats(author: string) {
+    return new Stats(
+      await this.eos.getTableRow({
+        code: this.contract,
+        scope: author,
+        table: 'stat'
+      })
+    )
   }
 
   /***
-   * Specify an author to get it, or none to get all.
+   * Query token authors.
+   */
+  public async getAuthors(paginationOptions?: PaginationOptions) {
+    const results = await this.eos.getTableRows(
+      {
+        code: this.contract,
+        table: 'authors'
+      },
+      paginationOptions
+    )
+    results.rows = results.rows.map(r => new Author(r))
+    return results
+  }
+
+  /***
+   * Get a specific token author.
    * @param author
    */
-  public async getAuthor(author: name | null = null) {
-    return this.getTableRows('authors', {
-      model: Author,
-      firstOnly: author !== null,
-      rowsOnly: author === null,
-      index: author !== null ? encodeName(author) : null
-    })
+  public async getAuthor(author: string) {
+    return new Author(
+      await this.eos.getTableRow({
+        code: this.contract,
+        table: 'authors',
+        primaryKey: author
+      })
+    )
   }
 
   /***
-   * Specify a tokeninfoId to get it, or none to get all.
+   * Query the token details list.
    * @param author
-   * @param tokeninfoId
+   * @param paginationOptions
    */
-  public async getTokenInfo(author: name, tokeninfoId: uint64_t | null = null) {
-    return this.getTableRows('sassets', {
-      scope: encodeName(author),
-      model: TokenInfo,
-      firstOnly: tokeninfoId !== null,
-      rowsOnly: tokeninfoId === null,
-      index: tokeninfoId !== null ? tokeninfoId : null
-    })
+  public async getTokenDetails(
+    author: string,
+    paginationOptions?: PaginationOptions
+  ): Promise<{ rows: TokenDetails[]; more: boolean }>
+  /***
+   * Get the details about a specific token.
+   * @param author
+   * @param tokenId
+   */
+  public async getTokenDetails(
+    author: string,
+    tokenId: string
+  ): Promise<TokenDetails>
+  public async getTokenDetails(author: string, option: any) {
+    if (typeof option === 'string') {
+      return new TokenDetails(
+        await this.eos.getTableRow({
+          code: this.contract,
+          scope: author,
+          table: 'sassets',
+          primaryKey: option
+        })
+      )
+    } else {
+      const results = await this.eos.getTableRows(
+        {
+          code: this.contract,
+          scope: author,
+          table: 'sassets'
+        },
+        option
+      )
+      results.rows = results.rows.map(r => new TokenDetails(r))
+      return results
+    }
   }
 
   /***
-   * Specify a tokeninfoId to get it, or none to get all.
-   * @param tokeninfoId
+   * Query NFT offers.
+   * @param paginationOptions
    */
-  public async getOffer(tokeninfoId: uint64_t | null = null) {
-    return this.getTableRows('offers', {
-      model: Offer,
-      firstOnly: tokeninfoId !== null,
-      rowsOnly: tokeninfoId === null,
-      index: tokeninfoId !== null ? tokeninfoId : null
-    })
+  public async getOffers(paginationOptions?: PaginationOptions) {
+    const results = await this.eos.getTableRows(
+      {
+        code: this.contract,
+        table: 'offers'
+      },
+      paginationOptions
+    )
+    results.rows = results.rows.map(r => new Offer(r))
+    return results
   }
 
   /***
-   * Gets the fungible token offers
+   * Get offer associated to an NFT.
+   * @param tokenId
    */
-  public async getFungibleOffer() {
-    return this.getTableRows('offerfs', {
-      model: OfferFungible,
-      firstOnly: false,
-      rowsOnly: true,
-      index: null
-    })
+  public async getOffer(tokenId: string) {
+    return new Offer(
+      await this.eos.getTableRow({
+        code: this.contract,
+        table: 'offers',
+        primaryKey: tokenId
+      })
+    )
   }
 
   /***
-   * Specify a tokeninfoId to get it, or none to get all.
-   * @param tokeninfoId
+   * Query the fungible token offers.
    */
-  public async getDelegate(tokeninfoId: uint64_t | null = null) {
-    return this.getTableRows('delegates', {
-      model: Delegate,
-      firstOnly: tokeninfoId !== null,
-      rowsOnly: tokeninfoId === null,
-      index: tokeninfoId !== null ? tokeninfoId : null
+  public async getFungibleOffers() {
+    const results = await this.eos.getTableRows({
+      code: this.contract,
+      table: 'offerfs'
     })
+    results.rows = results.rows.map(r => new OfferFungible(r))
+    return results
+  }
+
+  /***
+   * Query the delegated tokens.
+   * @param paginationOptions
+   */
+  public async getDelegations(paginationOptions: PaginationOptions) {
+    const results = await this.eos.getTableRows(
+      {
+        code: this.contract,
+        table: 'delegates'
+      },
+      paginationOptions
+    )
+    results.rows = results.rows.map(r => new TokenDelegation(r))
+    return results
+  }
+
+  /***
+   * Query the delegated tokens.
+   * @param tokenId
+   */
+  public async getDelegation(tokenId: string) {
+    return new TokenDelegation(
+      await this.eos.getTableRow({
+        code: this.contract,
+        table: 'delegates',
+        primaryKey: tokenId
+      })
+    )
   }
 
   /*********************************/

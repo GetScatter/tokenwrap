@@ -43,7 +43,7 @@ export class DGoods extends EosioTokenStandard {
   }
 
   /***
-   * Get all balances of an account
+   * Get the specific token balance of an account
    * @param accountName
    * @param categoryNameId
    */
@@ -128,6 +128,7 @@ export class DGoods extends EosioTokenStandard {
   // TODO Add functionality to query by owner account
   /***
    * Query the token details list.
+   * @param paginationOptions
    */
   public async getTokenDetails(
     paginationOptions?: PaginationOptions
