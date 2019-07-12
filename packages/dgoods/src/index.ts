@@ -202,7 +202,7 @@ export class DGoods extends EosioTokenStandard {
         symbol,
         version
       },
-      authorization: this.getActionAuth(this.contract)
+      authorization: this.formatAuth(this.contract)
     })
   }
 
@@ -221,7 +221,7 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'create',
       data: {
-        issuer: this.getAuthAccount(issuer),
+        issuer: this.formatAccount(issuer),
         category,
         token_name: tokenName,
         fungible,
@@ -231,7 +231,7 @@ export class DGoods extends EosioTokenStandard {
         base_uri: baseUri,
         max_supply: maxSupply
       },
-      authorization: this.getActionAuth(issuer)
+      authorization: this.formatAuth(issuer)
     })
   }
 
@@ -255,7 +255,7 @@ export class DGoods extends EosioTokenStandard {
         relative_uri: relativeUri,
         memo
       },
-      authorization: this.getActionAuth(this.contract)
+      authorization: this.formatAuth(this.contract)
     })
   }
 
@@ -264,10 +264,10 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'create',
       data: {
-        owner: this.getAuthAccount(owner),
+        owner: this.formatAccount(owner),
         dgood_ids: dgoodIds
       },
-      authorization: this.getActionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
@@ -280,11 +280,11 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'create',
       data: {
-        owner: this.getAuthAccount(owner),
+        owner: this.formatAccount(owner),
         category_name_id: categoryNameId,
         quantity
       },
-      authorization: this.getActionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
@@ -298,12 +298,12 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'create',
       data: {
-        from: this.getAuthAccount(from),
+        from: this.formatAccount(from),
         to,
         dgood_ids: dgoodIds,
         memo
       },
-      authorization: this.getActionAuth(from)
+      authorization: this.formatAuth(from)
     })
   }
 
@@ -319,14 +319,14 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'create',
       data: {
-        from: this.getAuthAccount(from),
+        from: this.formatAccount(from),
         to,
         category,
         token_name: tokenName,
         quantity,
         memo
       },
-      authorization: this.getActionAuth(from)
+      authorization: this.formatAuth(from)
     })
   }
 
@@ -339,11 +339,11 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'listsalenft',
       data: {
-        seller: this.getAuthAccount(seller),
+        seller: this.formatAccount(seller),
         dgood_id: dgoodId,
         net_sale_amount: netSaleAmount
       },
-      authorization: this.getActionAuth(seller)
+      authorization: this.formatAuth(seller)
     })
   }
 
@@ -352,49 +352,10 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'closesalenft',
       data: {
-        seller: this.getAuthAccount(seller),
+        seller: this.formatAccount(seller),
         dgood_id: dgoodId
       },
-      authorization: this.getActionAuth(seller)
+      authorization: this.formatAuth(seller)
     })
-  }
-
-  /*********************************/
-  /***********  HELPERS  ***********/
-  /*********************************/
-
-  /***
-   * Creates a SendableAction instance using the local EOS client.
-   * @param payload
-   */
-  private getSendableAction(payload: Action) {
-    return new SendableAction(payload, this.eos)
-  }
-
-  /***
-   * Creates an authorization array.
-   * @param account
-   */
-  private getActionAuth(account: string | Authorization): Authorization[] {
-    if (typeof account === 'string') {
-      return [{ actor: account, permission: 'active' }]
-    }
-    return [
-      {
-        actor: account.actor,
-        permission: account.permission || 'active'
-      }
-    ]
-  }
-
-  /***
-   * Extracts the account name from the provided authorization.
-   * @param authorization
-   */
-  private getAuthAccount(authorization: string | Authorization) {
-    if (typeof authorization === 'string') {
-      return authorization
-    }
-    return authorization.actor
   }
 }

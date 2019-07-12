@@ -7,7 +7,7 @@ export {
 } from 'morpheos'
 
 import { TokenStandard } from '@tokenwrap/core'
-import { Morpheos } from 'morpheos'
+import { Action, Authorization, Morpheos, SendableAction } from 'morpheos'
 
 export class EosioTokenStandard extends TokenStandard {
   protected eos: Morpheos
@@ -29,5 +29,40 @@ export class EosioTokenStandard extends TokenStandard {
     }
     this.eos = new Morpheos(eos)
     this.contract = contract
+  }
+
+  /***
+   * Creates a SendableAction instance using the local EOS client.
+   * @param payload
+   */
+  protected getSendableAction(payload: Action) {
+    return new SendableAction(payload, this.eos)
+  }
+
+  /***
+   * Creates an authorization array.
+   * @param account
+   */
+  protected formatAuth(account: string | Authorization): Authorization[] {
+    if (typeof account === 'string') {
+      return [{ actor: account, permission: 'active' }]
+    }
+    return [
+      {
+        actor: account.actor,
+        permission: account.permission || 'active'
+      }
+    ]
+  }
+
+  /***
+   * Extracts the account name from the provided authorization.
+   * @param authorization
+   */
+  protected formatAccount(authorization: string | Authorization) {
+    if (typeof authorization === 'string') {
+      return authorization
+    }
+    return authorization.actor
   }
 }

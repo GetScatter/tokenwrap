@@ -1,9 +1,7 @@
 import {
-  Action,
   Authorization,
   EosioTokenStandard,
-  PaginationOptions,
-  SendableAction
+  PaginationOptions
 } from '@tokenwrap/core-eosio'
 import {
   Author,
@@ -213,420 +211,421 @@ export class SimpleAssets extends EosioTokenStandard {
   /*********************************/
 
   public updatever(version: string) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'updatever',
-      data: {
-        version
-      },
-      authorization: this.actionAuth(this.contractAccount)
+      data: { version },
+      authorization: this.formatAuth(this.contract)
     })
   }
 
-  public regauthor(author: name, data: string, sTemplate: string) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public regauthor(
+    author: string | Authorization,
+    data: string,
+    sTemplate: string
+  ) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'regauthor',
       data: {
-        author,
+        author: this.formatAccount(author),
         data,
         stemplate: sTemplate
       },
-      authorization: this.actionAuth(author)
+      authorization: this.formatAuth(author)
     })
   }
 
-  public authorupdate(author: name, data: string, sTemplate: string) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public authorupdate(
+    author: string | Authorization,
+    data: string,
+    sTemplate: string
+  ) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'authorupdate',
       data: {
-        author,
+        author: this.formatAccount(author),
         data,
         stemplate: sTemplate
       },
-      authorization: this.actionAuth(author)
+      authorization: this.formatAuth(author)
     })
   }
 
   public create(
-    author: Account,
-    category: name,
-    owner: name,
+    author: string | Authorization,
+    category: string,
+    owner: string,
     iData: string,
     mData: string,
     requireClaim: boolean
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'create',
       data: {
-        author: author.name,
+        author: this.formatAccount(author),
         category,
         owner,
         idata: iData,
         mdata: mData,
         requireclaim: requireClaim
       },
-      authorization: this.actionAuth(author)
+      authorization: this.formatAuth(author)
     })
   }
 
-  public claim(claimer: Account, assetIds: uint64_t[]) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public claim(claimer: string | Authorization, assetIds: string[]) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'claim',
       data: {
-        author: claimer.name,
+        author: this.formatAccount(claimer),
         assetids: assetIds
       },
-      authorization: this.actionAuth(claimer)
+      authorization: this.formatAuth(claimer)
     })
   }
 
-  public transfer(from: Account, to: name, assetIds: uint64_t[], memo: string) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public transfer(
+    from: string | Authorization,
+    to: string,
+    assetIds: string[],
+    memo: string
+  ) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'transfer',
       data: {
-        from: from.name,
+        from: this.formatAccount(from),
         to,
         assetids: assetIds,
         memo
       },
-      authorization: this.actionAuth(from)
+      authorization: this.formatAuth(from)
     })
   }
 
   public update(
-    author: Account,
-    owner: name,
-    assetIds: uint64_t[],
+    author: string | Authorization,
+    owner: string,
+    assetIds: string[],
     mdata: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'update',
       data: {
-        author: author.name,
+        author: this.formatAccount(author),
         owner,
         assetids: assetIds,
         mdata
       },
-      authorization: this.actionAuth(author)
+      authorization: this.formatAuth(author)
     })
   }
 
   public offer(
-    owner: Account,
-    newOwner: name,
-    assetIds: uint64_t[],
+    owner: string | Authorization,
+    newOwner: string,
+    assetIds: string[],
     memo: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'offer',
       data: {
-        owner: owner.name,
+        owner: this.formatAccount(owner),
         newowner: newOwner,
         assetids: assetIds,
         memo
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
-  public canceloffer(owner: Account, assetIds: uint64_t[]) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public canceloffer(owner: string | Authorization, assetIds: string[]) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'canceloffer',
       data: {
-        owner: owner.name,
+        owner: this.formatAccount(owner),
         assetids: assetIds
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
-  public burn(owner: Account, assetIds: uint64_t[], memo: string) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public burn(owner: string | Authorization, assetIds: string[], memo: string) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'burn',
       data: {
-        owner: owner.name,
+        owner: this.formatAccount(owner),
         assetids: assetIds,
         memo
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
   public delegate(
-    owner: Account,
-    to: name,
-    assetIds: uint64_t[],
-    period: uint64_t,
+    owner: string | Authorization,
+    to: string,
+    assetIds: string[],
+    period: string | number,
     memo: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'delegate',
       data: {
-        owner: owner.name,
+        owner: this.formatAccount(owner),
         to,
         assetids: assetIds,
         period,
         memo
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
-  public undelegate(owner: Account, from: name, assetIds: uint64_t[]) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public undelegate(
+    owner: string | Authorization,
+    from: string,
+    assetIds: string[]
+  ) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'undelegate',
       data: {
-        owner: owner.name,
+        owner: this.formatAccount(owner),
         from,
         assetids: assetIds
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
-  public attach(owner: Account, assetIdc: uint64_t, assetIds: uint64_t[]) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public attach(
+    owner: string | Authorization,
+    assetIdc: string,
+    assetIds: string[]
+  ) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'attach',
       data: {
-        owner: owner.name,
+        owner: this.formatAccount(owner),
         assetidc: assetIdc,
         assetids: assetIds
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
-  public detach(owner: Account, assetIdc: uint64_t, assetIds: uint64_t[]) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public detach(
+    owner: string | Authorization,
+    assetIdc: string,
+    assetIds: string[]
+  ) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'detach',
       data: {
-        owner: owner.name,
+        owner: this.formatAccount(owner),
         assetidc: assetIdc,
         assetids: assetIds
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
   public attachf(
-    owner: Account,
-    author: name,
-    quantity: asset,
-    assetIdc: uint64_t
+    owner: string | Authorization,
+    author: string,
+    quantity: string,
+    assetIdc: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'attachf',
       data: {
-        owner: owner.name,
+        owner: this.formatAccount(owner),
         author,
         quantity,
         assetidc: assetIdc
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
   public detachf(
-    owner: Account,
-    author: name,
-    quantity: asset,
-    assetIdc: uint64_t
+    owner: string | Authorization,
+    author: string,
+    quantity: string,
+    assetIdc: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'detachf',
       data: {
-        owner: owner.name,
+        owner: this.formatAccount(owner),
         author,
         quantity,
         assetidc: assetIdc
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
-  public updatef(author: Account, sym: _symbol, data: string) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public updatef(author: string | Authorization, sym: string, data: string) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'updatef',
       data: {
-        author: author.name,
+        author: this.formatAccount(author),
         sym,
         data
       },
-      authorization: this.actionAuth(author)
+      authorization: this.formatAuth(author)
     })
   }
 
-  public issuef(to: name, author: Account, quantity: asset, memo: string) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public issuef(
+    to: string,
+    author: string | Authorization,
+    quantity: string,
+    memo: string
+  ) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'transferf',
       data: {
         to,
-        author: author.name,
+        author: this.formatAccount(author),
         quantity,
         memo
       },
-      authorization: this.actionAuth(author)
+      authorization: this.formatAuth(author)
     })
   }
 
   public transferf(
-    from: Account,
-    to: name,
-    author: name,
-    quantity: asset,
+    from: string | Authorization,
+    to: string,
+    author: string,
+    quantity: string,
     memo: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'transferf',
       data: {
-        from: from.name,
+        from: this.formatAccount(from),
         to,
         author,
         quantity,
         memo
       },
-      authorization: this.actionAuth(from)
+      authorization: this.formatAuth(from)
     })
   }
 
   public offerf(
-    owner: Account,
-    newOwner: name,
-    author: name,
-    quantity: asset,
+    owner: string | Authorization,
+    newOwner: string,
+    author: string,
+    quantity: string,
     memo: string
   ) {
-    return this.actionResult({
-      account: this.contractAccount,
+    return this.getSendableAction({
+      account: this.contract,
       name: 'offerf',
       data: {
-        owner: owner.name,
+        owner: this.formatAccount(owner),
         newowner: newOwner,
         author,
         quantity,
         memo
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
-  public cancelofferf(owner: Account, ftOfferIds: uint64_t[]) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public cancelofferf(owner: string | Authorization, ftOfferIds: string[]) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'cancelofferf',
       data: {
-        owner: owner.name,
+        owner: this.formatAccount(owner),
         ftofferids: ftOfferIds
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
   }
 
-  public claimf(claimer: Account, ftOfferIds: uint64_t[]) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public claimf(claimer: string | Authorization, ftOfferIds: string[]) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'claimf',
       data: {
-        claimer: claimer.name,
+        claimer: this.formatAccount(claimer),
         ftofferids: ftOfferIds
       },
-      authorization: this.actionAuth(claimer)
+      authorization: this.formatAuth(claimer)
     })
   }
 
-  public burnf(from: Account, author: name, quantity: asset, memo: string) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public burnf(
+    from: string | Authorization,
+    author: string,
+    quantity: string,
+    memo: string
+  ) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'burnf',
       data: {
-        from: from.name,
+        from: this.formatAccount(from),
         author,
         quantity,
         memo
       },
-      authorization: this.actionAuth(from)
+      authorization: this.formatAuth(from)
     })
   }
 
-  public openf(owner: name, author: name, symbol: _symbol, ramPayer: Account) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public openf(
+    owner: string,
+    author: string,
+    symbol: string,
+    ramPayer: string | Authorization
+  ) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'openf',
       data: {
         owner,
         author,
         symbol,
-        ram_payer: ramPayer.name
+        ram_payer: this.formatAccount(ramPayer)
       },
-      authorization: this.actionAuth(ramPayer)
+      authorization: this.formatAuth(ramPayer)
     })
   }
 
-  public closef(owner: Account, author: name, symbol: _symbol) {
-    return this.actionResult({
-      account: this.contractAccount,
+  public closef(owner: string | Authorization, author: string, symbol: string) {
+    return this.getSendableAction({
+      account: this.contract,
       name: 'closef',
       data: {
-        owner: owner.name,
+        owner: this.formatAccount(owner),
         author,
         symbol
       },
-      authorization: this.actionAuth(owner)
+      authorization: this.formatAuth(owner)
     })
-  }
-
-  /*********************************/
-  /***********  HELPERS  ***********/
-  /*********************************/
-
-  /***
-   * Provides a dual return result for action methods.
-   * `send` can be called as a method to transact the JSON.
-   * `method(...).send()` returns a promise.
-   * @param json
-   */
-  private actionResult(json: any) {
-    return { json, send: () => this.transact([json]) }
-  }
-
-  /***
-   * Gets a transactor depending on the version of eosjs
-   */
-  private transactor() {
-    return this.isLegacy ? this.eos.transaction : this.eos.transact
-  }
-
-  /***
-   * Creates an authorization array.
-   * @param account
-   */
-  private actionAuth(account: any) {
-    if (typeof account === 'string') {
-      return [{ actor: account, permission: 'active' }]
-    }
-    return [
-      {
-        actor: account.name,
-        permission: account.authority || account.permission || 'active'
-      }
-    ]
   }
 }
