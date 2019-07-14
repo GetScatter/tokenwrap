@@ -10,8 +10,8 @@ import { TokenStandard } from '@tokenwrap/core'
 import { Action, Authorization, Morpheos, SendableAction } from 'morpheos'
 
 export class EosioTokenStandard extends TokenStandard {
-  protected eos: Morpheos
-  protected contract: string
+  public eos: Morpheos
+  public contract: string
 
   /***
    * @param eos - an instantiated eosjs@16.0.9 or eosjs@20+ reference.
