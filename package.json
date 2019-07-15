@@ -7,14 +7,14 @@
     "clean:dist": "rimraf packages/*/dist",
     "clean:bundles": "rimraf bundles",
     "clean": "npm run clean:deps && npm run clean:dist && npm run clean:bundles",
-    "build": "npm run clean:dist && shglob -c \"tsc --build packages/core packages/core-eosio\" -g 'packages/!(core*)'",
-    "watch": "npm run clean:dist && shglob -c \"tsc --build --watch packages/core packages/core-eosio\" -g 'packages/!(core*)'",
+    "build": "npm run clean:dist && shglob -c \"tsc --build packages/core packages/core-eosio\" -g \"packages/!(core*)\"",
+    "watch": "npm run clean:dist && shglob -c \"tsc --build --watch packages/core packages/core-eosio\" -g \"packages/!(core*)\"",
     "bundle": "npm run clean:bundles && rollup -c",
     "create": "node createPackage.js",
-    "lint": "tslint --project tsconfig.json --config tslint.json 'packages/*/src/**/*.ts' 'packages/*/__tests__/**/*.ts'",
+    "lint": "tslint --project tsconfig.json --config tslint.json \"packages/*/src/**/*.ts\" \"packages/*/__tests__/**/*.ts\"",
     "lint-fix": "npm run lint -- --fix",
     "publish": "npm run build && npm run bundle && lerna publish",
-    "test": "mocha -r ts-node/register 'packages/**/__tests__/*.spec.ts' --exit --timeout 1000000"
+    "test": "mocha -r ts-node/register \"packages/**/__tests__/*.spec.ts\" --exit --timeout 1000000"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
