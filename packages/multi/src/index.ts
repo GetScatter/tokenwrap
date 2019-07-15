@@ -41,18 +41,13 @@ export class MultiWrapper {
     this.standards[standard] = tokenStandardClass
   }
 
-  public async transferNft(
-    from: FlexAuth,
-    to: string,
-    ids: NftId[],
-    memo: string
-  ) {
+  public transferNft(from: FlexAuth, to: string, ids: NftId[], memo: string) {
     return this.processGroups(ids, (wrapper, groupIds) =>
       wrapper.transferNft(from, to, groupIds, memo)
     )
   }
 
-  public async transferFt(
+  public transferFt(
     from: FlexAuth,
     to: string,
     amount: DGoodsFtAsset | SimpleassetsFtAsset,
@@ -65,7 +60,7 @@ export class MultiWrapper {
     return wrapper.transferFt(from, to, amount, memo)
   }
 
-  public async offerNft(
+  public offerNft(
     owner: FlexAuth,
     newOwner: string,
     ids: NftId[],
@@ -76,13 +71,13 @@ export class MultiWrapper {
     )
   }
 
-  public async acceptNft(claimer: string, ids: NftId[]) {
+  public acceptNft(claimer: string, ids: NftId[]) {
     return this.processGroups(ids, (wrapper, groupIds) =>
       wrapper.acceptNft(claimer, groupIds)
     )
   }
 
-  public async rentOutNft(
+  public rentOutNft(
     owner: FlexAuth,
     to: string,
     ids: NftId[],
@@ -94,7 +89,7 @@ export class MultiWrapper {
     )
   }
 
-  public async reclaimNft(owner: FlexAuth, from: string, ids: NftId[]) {
+  public reclaimNft(owner: FlexAuth, from: string, ids: NftId[]) {
     return this.processGroups(ids, (wrapper, groupIds) =>
       wrapper.reclaimNft(owner, from, groupIds)
     )
