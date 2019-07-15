@@ -1,7 +1,8 @@
 import {
-  Authorization,
   EosioTokenStandard,
-  PaginationOptions
+  FlexAuth,
+  PaginationOptions,
+  SendableTransaction
 } from '@tokenwrap/core-eosio'
 import {
   Author,
@@ -15,6 +16,55 @@ import {
 } from './models'
 
 export class SimpleAssets extends EosioTokenStandard {
+  public transferNft(
+    from: FlexAuth,
+    to: string,
+    ids: string[],
+    memo: string
+  ): SendableTransaction {
+    return this.transfer(from, to, ids, memo)
+  }
+
+  public transferFt(
+    from: FlexAuth,
+    to: string,
+    amount: { author: string; quantity: string },
+    memo: string
+  ): SendableTransaction {
+    return this.transferf(from, to, amount.author, amount.quantity, memo)
+  }
+
+  public offerNft(
+    owner: FlexAuth,
+    newOwner: string,
+    ids: string[],
+    memo: string
+  ): SendableTransaction {
+    return this.offer(owner, newOwner, ids, memo)
+  }
+
+  public acceptNft(claimer: FlexAuth, ids: string[]): SendableTransaction {
+    return this.claim(claimer, ids)
+  }
+
+  public rentOutNft(
+    owner: FlexAuth,
+    to: string,
+    ids: string[],
+    period: number | string,
+    memo: string
+  ): SendableTransaction {
+    return this.delegate(owner, to, ids, period, memo)
+  }
+
+  public reclaimNft(
+    owner: FlexAuth,
+    from: string,
+    ids: string[]
+  ): SendableTransaction {
+    return this.undelegate(owner, from, ids)
+  }
+
   /*********************************/
   /********  DATA FETCHERS *********/
   /*********************************/
@@ -219,11 +269,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public regauthor(
-    author: string | Authorization,
-    data: string,
-    sTemplate: string
-  ) {
+  public regauthor(author: FlexAuth, data: string, sTemplate: string) {
     return this.getSendableAction({
       account: this.contract,
       name: 'regauthor',
@@ -236,11 +282,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public authorupdate(
-    author: string | Authorization,
-    data: string,
-    sTemplate: string
-  ) {
+  public authorupdate(author: FlexAuth, data: string, sTemplate: string) {
     return this.getSendableAction({
       account: this.contract,
       name: 'authorupdate',
@@ -254,7 +296,7 @@ export class SimpleAssets extends EosioTokenStandard {
   }
 
   public create(
-    author: string | Authorization,
+    author: FlexAuth,
     category: string,
     owner: string,
     iData: string,
@@ -276,7 +318,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public claim(claimer: string | Authorization, assetIds: string[]) {
+  public claim(claimer: FlexAuth, assetIds: string[]) {
     return this.getSendableAction({
       account: this.contract,
       name: 'claim',
@@ -289,7 +331,7 @@ export class SimpleAssets extends EosioTokenStandard {
   }
 
   public transfer(
-    from: string | Authorization,
+    from: FlexAuth,
     to: string,
     assetIds: string[],
     memo: string
@@ -308,7 +350,7 @@ export class SimpleAssets extends EosioTokenStandard {
   }
 
   public update(
-    author: string | Authorization,
+    author: FlexAuth,
     owner: string,
     assetIds: string[],
     mdata: string
@@ -327,7 +369,7 @@ export class SimpleAssets extends EosioTokenStandard {
   }
 
   public offer(
-    owner: string | Authorization,
+    owner: FlexAuth,
     newOwner: string,
     assetIds: string[],
     memo: string
@@ -345,7 +387,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public canceloffer(owner: string | Authorization, assetIds: string[]) {
+  public canceloffer(owner: FlexAuth, assetIds: string[]) {
     return this.getSendableAction({
       account: this.contract,
       name: 'canceloffer',
@@ -357,7 +399,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public burn(owner: string | Authorization, assetIds: string[], memo: string) {
+  public burn(owner: FlexAuth, assetIds: string[], memo: string) {
     return this.getSendableAction({
       account: this.contract,
       name: 'burn',
@@ -371,10 +413,10 @@ export class SimpleAssets extends EosioTokenStandard {
   }
 
   public delegate(
-    owner: string | Authorization,
+    owner: FlexAuth,
     to: string,
     assetIds: string[],
-    period: string | number,
+    period: number | string,
     memo: string
   ) {
     return this.getSendableAction({
@@ -391,11 +433,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public undelegate(
-    owner: string | Authorization,
-    from: string,
-    assetIds: string[]
-  ) {
+  public undelegate(owner: FlexAuth, from: string, assetIds: string[]) {
     return this.getSendableAction({
       account: this.contract,
       name: 'undelegate',
@@ -408,11 +446,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public attach(
-    owner: string | Authorization,
-    assetIdc: string,
-    assetIds: string[]
-  ) {
+  public attach(owner: FlexAuth, assetIdc: string, assetIds: string[]) {
     return this.getSendableAction({
       account: this.contract,
       name: 'attach',
@@ -425,11 +459,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public detach(
-    owner: string | Authorization,
-    assetIdc: string,
-    assetIds: string[]
-  ) {
+  public detach(owner: FlexAuth, assetIdc: string, assetIds: string[]) {
     return this.getSendableAction({
       account: this.contract,
       name: 'detach',
@@ -443,7 +473,7 @@ export class SimpleAssets extends EosioTokenStandard {
   }
 
   public attachf(
-    owner: string | Authorization,
+    owner: FlexAuth,
     author: string,
     quantity: string,
     assetIdc: string
@@ -462,7 +492,7 @@ export class SimpleAssets extends EosioTokenStandard {
   }
 
   public detachf(
-    owner: string | Authorization,
+    owner: FlexAuth,
     author: string,
     quantity: string,
     assetIdc: string
@@ -480,7 +510,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public updatef(author: string | Authorization, sym: string, data: string) {
+  public updatef(author: FlexAuth, sym: string, data: string) {
     return this.getSendableAction({
       account: this.contract,
       name: 'updatef',
@@ -493,15 +523,10 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public issuef(
-    to: string,
-    author: string | Authorization,
-    quantity: string,
-    memo: string
-  ) {
+  public issuef(to: string, author: FlexAuth, quantity: string, memo: string) {
     return this.getSendableAction({
       account: this.contract,
-      name: 'transferf',
+      name: 'issuef',
       data: {
         to,
         author: this.formatAccount(author),
@@ -513,7 +538,7 @@ export class SimpleAssets extends EosioTokenStandard {
   }
 
   public transferf(
-    from: string | Authorization,
+    from: FlexAuth,
     to: string,
     author: string,
     quantity: string,
@@ -534,7 +559,7 @@ export class SimpleAssets extends EosioTokenStandard {
   }
 
   public offerf(
-    owner: string | Authorization,
+    owner: FlexAuth,
     newOwner: string,
     author: string,
     quantity: string,
@@ -554,7 +579,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public cancelofferf(owner: string | Authorization, ftOfferIds: string[]) {
+  public cancelofferf(owner: FlexAuth, ftOfferIds: string[]) {
     return this.getSendableAction({
       account: this.contract,
       name: 'cancelofferf',
@@ -566,7 +591,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public claimf(claimer: string | Authorization, ftOfferIds: string[]) {
+  public claimf(claimer: FlexAuth, ftOfferIds: string[]) {
     return this.getSendableAction({
       account: this.contract,
       name: 'claimf',
@@ -578,12 +603,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public burnf(
-    from: string | Authorization,
-    author: string,
-    quantity: string,
-    memo: string
-  ) {
+  public burnf(from: FlexAuth, author: string, quantity: string, memo: string) {
     return this.getSendableAction({
       account: this.contract,
       name: 'burnf',
@@ -601,7 +621,7 @@ export class SimpleAssets extends EosioTokenStandard {
     owner: string,
     author: string,
     symbol: string,
-    ramPayer: string | Authorization
+    ramPayer: FlexAuth
   ) {
     return this.getSendableAction({
       account: this.contract,
@@ -616,7 +636,7 @@ export class SimpleAssets extends EosioTokenStandard {
     })
   }
 
-  public closef(owner: string | Authorization, author: string, symbol: string) {
+  public closef(owner: FlexAuth, author: string, symbol: string) {
     return this.getSendableAction({
       account: this.contract,
       name: 'closef',

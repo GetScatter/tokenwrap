@@ -1,13 +1,68 @@
 import {
-  Action,
-  Authorization,
   EosioTokenStandard,
+  FlexAuth,
   PaginationOptions,
-  SendableAction
+  SendableTransaction
 } from '@tokenwrap/core-eosio'
 import { Ask, Config, Stats, TokenBalance, TokenDetails } from './models'
 
 export class DGoods extends EosioTokenStandard {
+  public transferNft(
+    from: FlexAuth,
+    to: string,
+    ids: string[],
+    memo: string
+  ): SendableTransaction {
+    return this.transfernft(from, to, ids, memo)
+  }
+
+  public transferFt(
+    from: FlexAuth,
+    to: string,
+    amount: { category: string; tokenName: string; quantity: string },
+    memo: string
+  ): SendableTransaction {
+    return this.transferft(
+      from,
+      to,
+      amount.category,
+      amount.tokenName,
+      amount.quantity,
+      memo
+    )
+  }
+
+  public offerNft(
+    owner: FlexAuth,
+    newOwner: string,
+    ids: string[],
+    memo: string
+  ): SendableTransaction {
+    throw new Error('DGoods does not support offerNft')
+  }
+
+  public acceptNft(claimer: FlexAuth, ids: string[]): SendableTransaction {
+    throw new Error('DGoods does not support acceptNft')
+  }
+
+  public rentOutNft(
+    owner: FlexAuth,
+    to: string,
+    ids: string[],
+    period: string | number,
+    memo: string
+  ): SendableTransaction {
+    throw new Error('DGoods does not support rentOutNft')
+  }
+
+  public reclaimNft(
+    owner: FlexAuth,
+    from: string,
+    ids: string[]
+  ): SendableTransaction {
+    throw new Error('DGoods does not support reclaimNft')
+  }
+
   /*********************************/
   /********  DATA FETCHERS *********/
   /*********************************/
@@ -207,7 +262,7 @@ export class DGoods extends EosioTokenStandard {
   }
 
   public create(
-    issuer: string | Authorization,
+    issuer: FlexAuth,
     category: string,
     tokenName: string,
     fungible: boolean,
@@ -259,7 +314,7 @@ export class DGoods extends EosioTokenStandard {
     })
   }
 
-  public burnnft(owner: Authorization, dgoodIds: string[]) {
+  public burnnft(owner: FlexAuth, dgoodIds: string[]) {
     return this.getSendableAction({
       account: this.contract,
       name: 'create',
@@ -271,11 +326,7 @@ export class DGoods extends EosioTokenStandard {
     })
   }
 
-  public burnft(
-    owner: Authorization,
-    categoryNameId: string,
-    quantity: string
-  ) {
+  public burnft(owner: FlexAuth, categoryNameId: string, quantity: string) {
     return this.getSendableAction({
       account: this.contract,
       name: 'create',
@@ -289,7 +340,7 @@ export class DGoods extends EosioTokenStandard {
   }
 
   public transfernft(
-    from: Authorization,
+    from: FlexAuth,
     to: string,
     dgoodIds: string[],
     memo: string
@@ -308,7 +359,7 @@ export class DGoods extends EosioTokenStandard {
   }
 
   public transferft(
-    from: Authorization,
+    from: FlexAuth,
     to: string,
     category: string,
     tokenName: string,
@@ -330,11 +381,7 @@ export class DGoods extends EosioTokenStandard {
     })
   }
 
-  public listsalenft(
-    seller: Authorization,
-    dgoodId: string,
-    netSaleAmount: string
-  ) {
+  public listsalenft(seller: FlexAuth, dgoodId: string, netSaleAmount: string) {
     return this.getSendableAction({
       account: this.contract,
       name: 'listsalenft',
@@ -347,7 +394,7 @@ export class DGoods extends EosioTokenStandard {
     })
   }
 
-  public closesalenft(seller: Authorization, dgoodId: string) {
+  public closesalenft(seller: FlexAuth, dgoodId: string) {
     return this.getSendableAction({
       account: this.contract,
       name: 'closesalenft',
