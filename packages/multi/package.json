@@ -17,5 +17,9 @@
   },
   "dependencies": {
     "@tokenwrap/core-eosio": "^0.0.0"
+  },
+  "devDependencies": {
+    "@tokenwrap/dgoods": "^0.0.0",
+    "@tokenwrap/simpleassets": "^0.0.0"
   }
 }
