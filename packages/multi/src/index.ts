@@ -71,7 +71,7 @@ export class MultiWrapper {
     )
   }
 
-  public acceptNft(claimer: string, ids: NftId[]) {
+  public acceptNft(claimer: FlexAuth, ids: NftId[]) {
     return this.processGroups(ids, (wrapper, groupIds) =>
       wrapper.acceptNft(claimer, groupIds)
     )
