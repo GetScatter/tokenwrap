@@ -323,7 +323,7 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'claim',
       data: {
-        author: this.formatAccount(claimer),
+        claimer: this.formatAccount(claimer),
         assetids: assetIds
       },
       authorization: this.formatAuth(claimer)
