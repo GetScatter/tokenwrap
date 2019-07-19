@@ -4,11 +4,12 @@ import {
   Morpheos,
   SendableTransaction
 } from '@tokenwrap/core-eosio'
+import { runInNewContext } from 'vm'
 
-export interface NftId {
-  standard: string
+export interface NftIds {
   contract: string
-  id: string
+  standard?: string
+  token_ids: string[]
 }
 
 export interface FtAsset {
@@ -41,7 +42,12 @@ export class MultiWrapper {
     this.standards[standard] = tokenStandardClass
   }
 
-  public transferNft(from: FlexAuth, to: string, ids: NftId[], memo: string) {
+  public async transferNft(
+    from: FlexAuth,
+    to: string,
+    ids: NftIds[],
+    memo: string
+  ) {
     return this.processGroups(ids, (wrapper, groupIds) =>
       wrapper.transferNft(from, to, groupIds, memo)
     )
@@ -60,10 +66,10 @@ export class MultiWrapper {
     return wrapper.transferFt(from, to, amount, memo)
   }
 
-  public offerNft(
+  public async offerNft(
     owner: FlexAuth,
     newOwner: string,
-    ids: NftId[],
+    ids: NftIds[],
     memo: string
   ) {
     return this.processGroups(ids, (wrapper, groupIds) =>
@@ -71,16 +77,16 @@ export class MultiWrapper {
     )
   }
 
-  public acceptNft(claimer: FlexAuth, ids: NftId[]) {
+  public async acceptNft(claimer: string, ids: NftIds[]) {
     return this.processGroups(ids, (wrapper, groupIds) =>
       wrapper.acceptNft(claimer, groupIds)
     )
   }
 
-  public rentOutNft(
+  public async rentOutNft(
     owner: FlexAuth,
     to: string,
-    ids: NftId[],
+    ids: NftIds[],
     period: number | string,
     memo: string
   ) {
@@ -89,7 +95,7 @@ export class MultiWrapper {
     )
   }
 
-  public reclaimNft(owner: FlexAuth, from: string, ids: NftId[]) {
+  public async reclaimNft(owner: FlexAuth, from: string, ids: NftIds[]) {
     return this.processGroups(ids, (wrapper, groupIds) =>
       wrapper.reclaimNft(owner, from, groupIds)
     )
@@ -115,27 +121,35 @@ export class MultiWrapper {
     }
   }
 
-  private groupByContract(ids: NftId[]) {
-    const groups: { [key: string]: NftId[] } = {}
-    for (const id of ids) {
-      if (!groups[id.contract]) {
-        groups[id.contract] = []
-      }
-      groups[id.contract].push(id)
-    }
-    return groups
-  }
-
-  private processGroups(
-    ids: NftId[],
-    fn: (wrapper: EosioTokenStandard, groupIds: string[]) => SendableTransaction
+  private async processGroups(
+    ids: NftIds[],
+    fn: (wrapper: EosioTokenStandard, tokenIds: string[]) => SendableTransaction
   ) {
-    const groups = this.groupByContract(ids)
-    const actions = Object.entries(groups).map(([contract, groupIds]) => {
-      const wrapper = this.getStandardInstance(groupIds[0].standard, contract)
-      return fn(wrapper, groupIds.map(id => id.id))
+    for (const nftIds of ids) {
+      if (!nftIds.standard) {
+        nftIds.standard = await this.getStandard(nftIds.contract)
+      }
+    }
+    const actions = Object.entries(ids).map(([contract, nfts]) => {
+      const wrapper = this.getStandardInstance(
+        nfts.standard ? nfts.standard : '',
+        nfts.contract
+      )
+      return fn(wrapper, nfts.token_ids)
     })
     return new SendableTransaction(actions, this.eos)
+  }
+
+  private async getStandard(contract: string) {
+    const tokenConfigs = await this.eos.getTableRow({
+      code: contract,
+      scope: contract,
+      table: 'tokenconfigs'
+    })
+    if (tokenConfigs) {
+      return tokenConfigs.standard
+    }
+    return ''
   }
 
   private ftIsSimpleassets(asset: any): asset is SimpleassetsFtAsset {
