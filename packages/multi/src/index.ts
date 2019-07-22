@@ -134,7 +134,8 @@ export class MultiWrapper {
     const groups: { [contract: string]: NftGroup } = {}
     for (const item of ids) {
       const group: NftGroup = groups[item.contract] || {
-        contract: item.contract
+        contract: item.contract,
+        tokenIds: []
       }
       group.standard = group.standard || item.standard
       groups[item.contract] = group
