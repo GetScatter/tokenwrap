@@ -2,7 +2,7 @@ import {
   EosioTokenStandard,
   FlexAuth,
   Morpheos,
-  SendableTransaction
+  Transaction
 } from '@tokenwrap/core-eosio'
 
 export interface NftId {
@@ -152,7 +152,7 @@ export class MultiWrapper {
 
   private async processGroups(
     ids: Array<NftGroup | NftId>,
-    fn: (wrapper: EosioTokenStandard, tokenIds: string[]) => SendableTransaction
+    fn: (wrapper: EosioTokenStandard, tokenIds: string[]) => Transaction
   ) {
     const groups = this.normalizeNftGroups(ids)
     const actions = await Promise.all(
@@ -164,7 +164,7 @@ export class MultiWrapper {
         return fn(wrapper, group.tokenIds)
       })
     )
-    return new SendableTransaction(actions, this.eos)
+    return new Transaction(actions, this.eos)
   }
 
   private async fetchStandard(contract: string) {

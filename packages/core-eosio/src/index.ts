@@ -1,13 +1,13 @@
 export {
   Authorization,
   Action,
-  SendableTransaction,
+  Transaction,
   PaginationOptions,
   Morpheos
 } from 'morpheos'
 
 import { TokenStandard } from '@tokenwrap/core'
-import { Action, Authorization, Morpheos, SendableTransaction } from 'morpheos'
+import { Action, Authorization, Morpheos, Transaction } from 'morpheos'
 
 export type FlexAuth = Authorization | string
 
@@ -38,26 +38,23 @@ export abstract class EosioTokenStandard extends TokenStandard {
     to: string,
     ids: string[],
     memo: string
-  ): SendableTransaction
+  ): Transaction
 
   public abstract transferFt(
     from: FlexAuth,
     to: string,
     amount: any,
     memo: string
-  ): SendableTransaction
+  ): Transaction
 
   public abstract offerNft(
     owner: FlexAuth,
     newOwner: string,
     ids: string[],
     memo: string
-  ): SendableTransaction
+  ): Transaction
 
-  public abstract acceptNft(
-    claimer: FlexAuth,
-    ids: string[]
-  ): SendableTransaction
+  public abstract acceptNft(claimer: FlexAuth, ids: string[]): Transaction
 
   public abstract rentOutNft(
     owner: FlexAuth,
@@ -65,46 +62,27 @@ export abstract class EosioTokenStandard extends TokenStandard {
     ids: string[],
     period: number | string,
     memo: string
-  ): SendableTransaction
+  ): Transaction
 
   public abstract reclaimNft(
     owner: FlexAuth,
     from: string,
     ids: string[]
-  ): SendableTransaction
+  ): Transaction
 
   /***
-   * Creates a SendableAction instance using the local EOS client.
+   * Creates a Transaction instance using the local EOS client.
    * @param payload
    */
   protected getSendableAction(payload: Action) {
-    return new SendableTransaction(payload, this.eos)
+    return new Transaction(payload, this.eos)
   }
 
   /***
-   * Creates an authorization array.
-   * @param account
-   */
-  protected formatAuth(account: FlexAuth): Authorization[] {
-    if (typeof account === 'string') {
-      return [{ actor: account, permission: 'active' }]
-    }
-    return [
-      {
-        actor: account.actor,
-        permission: account.permission || 'active'
-      }
-    ]
-  }
-
-  /***
-   * Extracts the account name from the provided authorization.
+   * Extracts the account name from the provided FlexAuth.
    * @param authorization
    */
-  protected formatAccount(authorization: FlexAuth) {
-    if (typeof authorization === 'string') {
-      return authorization
-    }
-    return authorization.actor
+  protected getAccountName(authorization: FlexAuth) {
+    return Transaction.extractAccountName(authorization)
   }
 }

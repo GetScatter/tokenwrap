@@ -2,7 +2,7 @@ import {
   EosioTokenStandard,
   FlexAuth,
   PaginationOptions,
-  SendableTransaction
+  Transaction
 } from '@tokenwrap/core-eosio'
 import { Ask, Config, Stats, TokenBalance, TokenDetails } from './models'
 
@@ -12,7 +12,7 @@ export class DGoods extends EosioTokenStandard {
     to: string,
     ids: string[],
     memo: string
-  ): SendableTransaction {
+  ): Transaction {
     return this.transfernft(from, to, ids, memo)
   }
 
@@ -21,7 +21,7 @@ export class DGoods extends EosioTokenStandard {
     to: string,
     amount: { category: string; tokenName: string; quantity: string },
     memo: string
-  ): SendableTransaction {
+  ): Transaction {
     return this.transferft(
       from,
       to,
@@ -37,11 +37,11 @@ export class DGoods extends EosioTokenStandard {
     newOwner: string,
     ids: string[],
     memo: string
-  ): SendableTransaction {
+  ): Transaction {
     throw new Error('DGoods does not support offerNft')
   }
 
-  public acceptNft(claimer: FlexAuth, ids: string[]): SendableTransaction {
+  public acceptNft(claimer: FlexAuth, ids: string[]): Transaction {
     throw new Error('DGoods does not support acceptNft')
   }
 
@@ -51,15 +51,11 @@ export class DGoods extends EosioTokenStandard {
     ids: string[],
     period: string | number,
     memo: string
-  ): SendableTransaction {
+  ): Transaction {
     throw new Error('DGoods does not support rentOutNft')
   }
 
-  public reclaimNft(
-    owner: FlexAuth,
-    from: string,
-    ids: string[]
-  ): SendableTransaction {
+  public reclaimNft(owner: FlexAuth, from: string, ids: string[]): Transaction {
     throw new Error('DGoods does not support reclaimNft')
   }
 
@@ -257,7 +253,7 @@ export class DGoods extends EosioTokenStandard {
         symbol,
         version
       },
-      authorization: this.formatAuth(this.contract)
+      authorization: this.contract
     })
   }
 
@@ -276,7 +272,7 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'create',
       data: {
-        issuer: this.formatAccount(issuer),
+        issuer: this.getAccountName(issuer),
         category,
         token_name: tokenName,
         fungible,
@@ -286,7 +282,7 @@ export class DGoods extends EosioTokenStandard {
         base_uri: baseUri,
         max_supply: maxSupply
       },
-      authorization: this.formatAuth(issuer)
+      authorization: issuer
     })
   }
 
@@ -310,7 +306,7 @@ export class DGoods extends EosioTokenStandard {
         relative_uri: relativeUri,
         memo
       },
-      authorization: this.formatAuth(this.contract)
+      authorization: this.contract
     })
   }
 
@@ -319,10 +315,10 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'create',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         dgood_ids: dgoodIds
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -331,11 +327,11 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'create',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         category_name_id: categoryNameId,
         quantity
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -349,12 +345,12 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'create',
       data: {
-        from: this.formatAccount(from),
+        from: this.getAccountName(from),
         to,
         dgood_ids: dgoodIds,
         memo
       },
-      authorization: this.formatAuth(from)
+      authorization: from
     })
   }
 
@@ -370,14 +366,14 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'create',
       data: {
-        from: this.formatAccount(from),
+        from: this.getAccountName(from),
         to,
         category,
         token_name: tokenName,
         quantity,
         memo
       },
-      authorization: this.formatAuth(from)
+      authorization: from
     })
   }
 
@@ -386,11 +382,11 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'listsalenft',
       data: {
-        seller: this.formatAccount(seller),
+        seller: this.getAccountName(seller),
         dgood_id: dgoodId,
         net_sale_amount: netSaleAmount
       },
-      authorization: this.formatAuth(seller)
+      authorization: seller
     })
   }
 
@@ -399,10 +395,10 @@ export class DGoods extends EosioTokenStandard {
       account: this.contract,
       name: 'closesalenft',
       data: {
-        seller: this.formatAccount(seller),
+        seller: this.getAccountName(seller),
         dgood_id: dgoodId
       },
-      authorization: this.formatAuth(seller)
+      authorization: seller
     })
   }
 }

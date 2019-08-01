@@ -2,7 +2,7 @@ import {
   EosioTokenStandard,
   FlexAuth,
   PaginationOptions,
-  SendableTransaction
+  Transaction
 } from '@tokenwrap/core-eosio'
 import {
   Author,
@@ -21,7 +21,7 @@ export class SimpleAssets extends EosioTokenStandard {
     to: string,
     ids: string[],
     memo: string
-  ): SendableTransaction {
+  ): Transaction {
     return this.transfer(from, to, ids, memo)
   }
 
@@ -30,7 +30,7 @@ export class SimpleAssets extends EosioTokenStandard {
     to: string,
     amount: { author: string; quantity: string },
     memo: string
-  ): SendableTransaction {
+  ): Transaction {
     return this.transferf(from, to, amount.author, amount.quantity, memo)
   }
 
@@ -39,11 +39,11 @@ export class SimpleAssets extends EosioTokenStandard {
     newOwner: string,
     ids: string[],
     memo: string
-  ): SendableTransaction {
+  ): Transaction {
     return this.offer(owner, newOwner, ids, memo)
   }
 
-  public acceptNft(claimer: FlexAuth, ids: string[]): SendableTransaction {
+  public acceptNft(claimer: FlexAuth, ids: string[]): Transaction {
     return this.claim(claimer, ids)
   }
 
@@ -53,15 +53,11 @@ export class SimpleAssets extends EosioTokenStandard {
     ids: string[],
     period: number | string,
     memo: string
-  ): SendableTransaction {
+  ): Transaction {
     return this.delegate(owner, to, ids, period, memo)
   }
 
-  public reclaimNft(
-    owner: FlexAuth,
-    from: string,
-    ids: string[]
-  ): SendableTransaction {
+  public reclaimNft(owner: FlexAuth, from: string, ids: string[]): Transaction {
     return this.undelegate(owner, from, ids)
   }
 
@@ -265,7 +261,7 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'updatever',
       data: { version },
-      authorization: this.formatAuth(this.contract)
+      authorization: this.contract
     })
   }
 
@@ -274,11 +270,11 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'regauthor',
       data: {
-        author: this.formatAccount(author),
+        author: this.getAccountName(author),
         data,
         stemplate: sTemplate
       },
-      authorization: this.formatAuth(author)
+      authorization: author
     })
   }
 
@@ -287,11 +283,11 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'authorupdate',
       data: {
-        author: this.formatAccount(author),
+        author: this.getAccountName(author),
         data,
         stemplate: sTemplate
       },
-      authorization: this.formatAuth(author)
+      authorization: author
     })
   }
 
@@ -307,14 +303,14 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'create',
       data: {
-        author: this.formatAccount(author),
+        author: this.getAccountName(author),
         category,
         owner,
         idata: iData,
         mdata: mData,
         requireclaim: requireClaim
       },
-      authorization: this.formatAuth(author)
+      authorization: author
     })
   }
 
@@ -323,10 +319,10 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'claim',
       data: {
-        claimer: this.formatAccount(claimer),
+        claimer: this.getAccountName(claimer),
         assetids: assetIds
       },
-      authorization: this.formatAuth(claimer)
+      authorization: claimer
     })
   }
 
@@ -340,12 +336,12 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'transfer',
       data: {
-        from: this.formatAccount(from),
+        from: this.getAccountName(from),
         to,
         assetids: assetIds,
         memo
       },
-      authorization: this.formatAuth(from)
+      authorization: from
     })
   }
 
@@ -359,12 +355,12 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'update',
       data: {
-        author: this.formatAccount(author),
+        author: this.getAccountName(author),
         owner,
         assetids: assetIds,
         mdata
       },
-      authorization: this.formatAuth(author)
+      authorization: author
     })
   }
 
@@ -378,12 +374,12 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'offer',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         newowner: newOwner,
         assetids: assetIds,
         memo
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -392,10 +388,10 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'canceloffer',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         assetids: assetIds
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -404,11 +400,11 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'burn',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         assetids: assetIds,
         memo
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -423,13 +419,13 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'delegate',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         to,
         assetids: assetIds,
         period,
         memo
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -438,11 +434,11 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'undelegate',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         from,
         assetids: assetIds
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -451,11 +447,11 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'attach',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         assetidc: assetIdc,
         assetids: assetIds
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -464,11 +460,11 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'detach',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         assetidc: assetIdc,
         assetids: assetIds
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -482,12 +478,12 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'attachf',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         author,
         quantity,
         assetidc: assetIdc
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -501,12 +497,12 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'detachf',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         author,
         quantity,
         assetidc: assetIdc
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -515,11 +511,11 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'updatef',
       data: {
-        author: this.formatAccount(author),
+        author: this.getAccountName(author),
         sym,
         data
       },
-      authorization: this.formatAuth(author)
+      authorization: author
     })
   }
 
@@ -529,11 +525,11 @@ export class SimpleAssets extends EosioTokenStandard {
       name: 'issuef',
       data: {
         to,
-        author: this.formatAccount(author),
+        author: this.getAccountName(author),
         quantity,
         memo
       },
-      authorization: this.formatAuth(author)
+      authorization: author
     })
   }
 
@@ -548,13 +544,13 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'transferf',
       data: {
-        from: this.formatAccount(from),
+        from: this.getAccountName(from),
         to,
         author,
         quantity,
         memo
       },
-      authorization: this.formatAuth(from)
+      authorization: from
     })
   }
 
@@ -569,13 +565,13 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'offerf',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         newowner: newOwner,
         author,
         quantity,
         memo
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -584,10 +580,10 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'cancelofferf',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         ftofferids: ftOfferIds
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 
@@ -596,10 +592,10 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'claimf',
       data: {
-        claimer: this.formatAccount(claimer),
+        claimer: this.getAccountName(claimer),
         ftofferids: ftOfferIds
       },
-      authorization: this.formatAuth(claimer)
+      authorization: claimer
     })
   }
 
@@ -608,12 +604,12 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'burnf',
       data: {
-        from: this.formatAccount(from),
+        from: this.getAccountName(from),
         author,
         quantity,
         memo
       },
-      authorization: this.formatAuth(from)
+      authorization: from
     })
   }
 
@@ -630,9 +626,9 @@ export class SimpleAssets extends EosioTokenStandard {
         owner,
         author,
         symbol,
-        ram_payer: this.formatAccount(ramPayer)
+        ram_payer: this.getAccountName(ramPayer)
       },
-      authorization: this.formatAuth(ramPayer)
+      authorization: ramPayer
     })
   }
 
@@ -641,11 +637,11 @@ export class SimpleAssets extends EosioTokenStandard {
       account: this.contract,
       name: 'closef',
       data: {
-        owner: this.formatAccount(owner),
+        owner: this.getAccountName(owner),
         author,
         symbol
       },
-      authorization: this.formatAuth(owner)
+      authorization: owner
     })
   }
 }
