@@ -1,6 +1,6 @@
 {
   "name": "@tokenwrap/simpleassets",
-  "version": "0.0.0",
+  "version": "1.0.0-alpha.0",
   "author": "GetScatter Ltd.",
   "license": "MIT",
   "publishConfig": {
@@ -19,6 +19,6 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@tokenwrap/core-eosio": "^0.0.0"
+    "@tokenwrap/core-eosio": "^1.0.0-alpha.0"
   }
 }
