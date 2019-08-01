@@ -23,6 +23,9 @@ const PACKAGE_JSON = {
   version: "0.0.0",
   author: "GetScatter Ltd.",
   license: "MIT",
+  publishConfig: {
+    access: "public"
+  },
   main: "dist/index.js",
   directories: { lib: "dist", test: "__tests__" },
   files: ["dist"],
@@ -48,10 +51,7 @@ fs.writeFileSync(
   JSON.stringify(PACKAGE_JSON, null, 2)
 );
 fs.writeFileSync(`${PACKAGE_DIR}/README.md`, `# ${PACKAGE_NAME}`);
-fs.writeFileSync(
-  `${PACKAGE_DIR}/ts.json`,
-  JSON.stringify(TS_CONFIG, null, 2)
-);
+fs.writeFileSync(`${PACKAGE_DIR}/ts.json`, JSON.stringify(TS_CONFIG, null, 2));
 fs.writeFileSync(`${PACKAGE_DIR}/src/index.ts`, "");
 
 console.log(`Successfully created package ${PACKAGE_NAME}`);
