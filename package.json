@@ -13,8 +13,8 @@
     "create": "node createPackage.js",
     "lint": "tslint --project tsconfig.json --config tslint.json \"packages/*/src/**/*.ts\" \"packages/*/__tests__/**/*.ts\"",
     "lint-fix": "npm run lint -- --fix",
-    "publish": "npm run build && npm run bundle && lerna publish",
-    "test": "mocha -r ts-node/register \"packages/**/__tests__/*.spec.ts\" --exit --timeout 1000000"
+    "publish": "npm run build && lerna publish",
+    "test": "eosup testnet -sq -c \"mocha -r ts-node/register \\\"packages/**/__tests__/*.spec.ts\\\"\""
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
@@ -24,6 +24,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "eosjs": "^20.0.0",
+    "eosup": "^1.1.0",
     "husky": "^2.3.0",
     "lerna": "^3.13.4",
     "mocha": "^6.1.4",
