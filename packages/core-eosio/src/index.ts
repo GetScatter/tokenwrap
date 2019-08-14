@@ -7,9 +7,7 @@ export {
 } from 'morpheos'
 
 import { TokenStandard } from '@tokenwrap/core'
-import { Action, Authorization, Morpheos, Transaction } from 'morpheos'
-
-export type FlexAuth = Authorization | string
+import { Action, FlexAuth, Morpheos, Transaction } from 'morpheos'
 
 export abstract class EosioTokenStandard extends TokenStandard {
   public eos: Morpheos
