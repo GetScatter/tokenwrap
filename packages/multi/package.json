@@ -1,6 +1,6 @@
 {
   "name": "@tokenwrap/multi",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "author": "GetScatter Ltd.",
   "license": "MIT",
   "publishConfig": {
@@ -19,10 +19,10 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@tokenwrap/core-eosio": "^1.0.0-alpha.0"
+    "@tokenwrap/core-eosio": "^1.0.0-alpha.1"
   },
   "devDependencies": {
-    "@tokenwrap/dgoods": "^1.0.0-alpha.0",
-    "@tokenwrap/simpleassets": "^1.0.0-alpha.0"
+    "@tokenwrap/dgoods": "^1.0.0-alpha.1",
+    "@tokenwrap/simpleassets": "^1.0.0-alpha.1"
   }
 }
