@@ -1,6 +1,7 @@
 export {
   Authorization,
   Action,
+  FlexAuth,
   Transaction,
   PaginationOptions,
   Morpheos
