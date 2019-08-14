@@ -16,6 +16,11 @@
     "prepare": "npm run build",
     "test": "eosup testnet -sq -c \"mocha -r ts-node/register \\\"packages/**/__tests__/*.spec.ts\\\"\""
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.0",
@@ -24,7 +29,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "eosjs": "^20.0.0",
-    "eosup": "^1.1.0",
+    "eosup": "^1.1.2",
     "husky": "^2.3.0",
     "lerna": "^3.13.4",
     "mocha": "^6.1.4",
@@ -42,10 +47,5 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
     "typescript": "^3.4.5"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint"
-    }
   }
 }
