@@ -32,7 +32,7 @@
     "eosup": "^1.1.2",
     "husky": "^2.3.0",
     "lerna": "^3.13.4",
-    "mocha": "^6.1.4",
+    "mocha": "^10.2.0",
     "mocha-typescript": "^1.1.17",
     "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
